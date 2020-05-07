@@ -46,7 +46,7 @@ const appName = path.basename(__filename).split(".")[0];
 function showHelp() {
   const pkg = require("../package.json");
   const version = pkg.version;
-  
+
   console.log(`${appName} [options] [saved_config_file]
 version: ${version}
 

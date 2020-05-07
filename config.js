@@ -1,4 +1,4 @@
-const uuid = require("uuid")
+const uuid = require("uuid");
 module.exports = {
   logLevel: process.env.LOG_LEVEL || "error",
   host: process.env.HOST || "0.0.0.0",
@@ -13,8 +13,7 @@ module.exports = {
     last_name: process.env.SSO_USER_LAST_NAME || "Last",
     related_emails: [],
     groups: [],
-    permitted_applications: [
-    ],
+    permitted_applications: [],
     access_profiles: [],
   },
 };
