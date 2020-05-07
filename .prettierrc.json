@@ -1,0 +1,17 @@
+{
+  "printWidth": 160,
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "printWidth": 120
+      }
+    },
+    {
+      "files": "*.ts",
+      "options": {
+        "printWidth": 160
+      }
+    }
+  ]
+}
