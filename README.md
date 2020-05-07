@@ -23,7 +23,11 @@ This will dump the config as it will be used. Try this ...
 
 ### Saving your config
 
-    $ mock-sso -e email@example.com -c contact@example.com
+    $ mock-sso -e email@example.com -c contact@example.com -d > saved-config.json
+
+### Reusing saved config
+
+    $ mock-sso saved-config.json -d
 
 
 ### Help
