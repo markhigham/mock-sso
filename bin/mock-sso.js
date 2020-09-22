@@ -105,8 +105,10 @@ const app = new App(config);
 app
   .start()
   .then(() => {
-    console.log(`${appName} listening on ${config.host}:${config.port}`);
-    logger.debug(`logging level is ${config.logLevel}`.gray);
+    const url = `${config.host}:${config.port}`;
+    console.log(`${appName} listening on ${url}`);
+    console.log(`visit http://${url}/config to view current user`);
+    console.debug(`logging level is ${config.logLevel}`.gray);
   })
   .catch((err) => {
     console.error("Something failed", err);
@@ -137,6 +139,6 @@ function stopApp() {
     });
 }
 
-// Leave this commented out - let node handle closing connectons
+// Leave this commented out - let node handle closing connections
 // process.on("SIGINT", stopApp);
 // process.on("SIGTERM", stopApp);

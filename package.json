@@ -12,7 +12,7 @@
     "url": "https://github.com/markhigham/mock-sso"
   },
   "scripts": {
-    "debug": "nodemon index.js",
+    "debug": "LOG_LEVEL=debug nodemon bin/mock-sso.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node bin/mock-sso.js"
   },
