@@ -41,6 +41,13 @@ if (argv.b) {
 
 config.user.user_id = argv.i || config.user.user_id;
 
+// django-staff-sso v3.0.0 requires email_user_id
+if (argv.u) {
+  config.user.email_user_id = argv.u;
+} else {
+  config.user.email_user_id = `id-${config.user.email}`;
+}
+
 const appName = path.basename(__filename).split(".")[0];
 
 function showHelp() {
@@ -61,6 +68,8 @@ version: ${version}
 -b  (Optional) Sets user email and user contact_email to the provided value
 
 -i (Optional) GUID for the SSO user. Will default to a new GUID if missing.
+
+-u (Optional) email address to use as email_user_id. Will default to id+SSO email address if missing.
 
 -d (Optional) Dump config based on switches and any config files and exit
 

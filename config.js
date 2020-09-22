@@ -8,6 +8,7 @@ module.exports = {
   user: {
     email: process.env.SSO_EMAIL || "email@example.com",
     contact_email: process.env.SSO_CONTACT_EMAIL || "contact_email@example.com",
+    email_user_id: process.env.SSO_EMAIL_USER_ID || "email-123455@id.example.com",
     user_id: process.env.SSO_USER_ID || uuid.v4(),
     first_name: process.env.SSO_USER_FIRST_NAME || "First",
     last_name: process.env.SSO_USER_LAST_NAME || "Last",
