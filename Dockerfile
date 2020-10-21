@@ -8,3 +8,5 @@ RUN npm install --production
 COPY . ./
 
 EXPOSE 5000
+
+CMD [ "node", "/mock-sso/bin/mock-sso.js" ]

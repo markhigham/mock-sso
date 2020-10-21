@@ -122,7 +122,7 @@ function stopApp() {
   const timeout = setTimeout(() => {
     console.error("Force exit");
     process.exit(-2);
-  }, 5000);
+  }, 1000);
 
   app
     .stop((err) => {
@@ -142,5 +142,5 @@ function stopApp() {
 }
 
 // Leave this commented out - let node handle closing connections
-// process.on("SIGINT", stopApp);
-// process.on("SIGTERM", stopApp);
+process.on("SIGINT", stopApp);
+process.on("SIGTERM", stopApp);
