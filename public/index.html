@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      input.ng-dirty {
+        background-color: yellow;
+      }
+    </style>
+
+    <title>Mock SSO!</title>
+  </head>
+  <body ng-app="ssoApp">
+    <div class="container" ng-controller="UserController">
+      <div class="row">
+        <div class="col">
+          <h1>mock-sso</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <form>
+            <div class="form-group">
+              <label for="email_user_id">User Id</label>
+              <input type="email" class="form-control" id="email_user_id" ng-model="user.email_user_id" />
+            </div>
+            <div class="form-group">
+              <label for="email">email</label>
+              <input type="email" class="form-control" id="email" ng-model="user.email" />
+            </div>
+
+            <div class="form-group">
+              <label for="contact_email">contact_email</label>
+              <input type="email" class="form-control" id="contact_email" ng-model="user.contact_email" />
+            </div>
+
+            <div class="form-row">
+              <div class="col">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" class="form-control" placeholder="" ng-model="user.first_name" />
+              </div>
+              <div class="col">
+                <label for="last_name">Last Name</label>
+                <input type="text" class="form-control" placeholder="Last name" ng-model="user.last_name" />
+              </div>
+            </div>
+            <div class="form-group">
+              <br />
+              <button type="submit" class="btn btn-primary" ng-click="update()">Update</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+    <script>
+      const ssoApp = angular.module("ssoApp", []);
+
+      ssoApp.controller("UserController", function ($scope) {
+        $scope.user = {};
+
+        fetch("/config")
+          .then((response) => response.json())
+          .then((data) => {
+            $scope.user = data.user;
+            console.log(data.user);
+            $scope.$apply();
+          });
+
+        $scope.update = function () {
+          console.log("update");
+
+          fetch("/config", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify($scope.user),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+            });
+        };
+      });
+    </script>
+  </body>
+</html>
