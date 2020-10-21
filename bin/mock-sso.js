@@ -61,6 +61,8 @@ version: ${version}
 
 -h  (Optional) Host address - defaults to 0.0.0.0
 
+-u  (Optional) specify a value to be returned for email_user_id. Defaults to -e email 
+
 -e  (Optional) SSO email address. Defaults to value from config
 
 -c  (Optional) SSO contact email address
