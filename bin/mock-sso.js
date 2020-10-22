@@ -118,12 +118,6 @@ app
   });
 
 function stopApp() {
-  // Force shutdown after 5 seconds
-  const timeout = setTimeout(() => {
-    console.error("Force exit");
-    process.exit(-2);
-  }, 1000);
-
   app
     .stop((err) => {
       if (err) {
@@ -141,6 +135,5 @@ function stopApp() {
     });
 }
 
-// Leave this commented out - let node handle closing connections
 process.on("SIGINT", stopApp);
 process.on("SIGTERM", stopApp);
