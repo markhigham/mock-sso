@@ -44,7 +44,9 @@ config.user.user_id = argv.i || config.user.user_id;
 // django-staff-sso v3.0.0 requires email_user_id
 if (argv.u) {
   config.user.email_user_id = argv.u;
-} else {
+}
+// but only use a default if the value in config is missing !
+if (!config.user.email_user_id) {
   config.user.email_user_id = `id-${config.user.email}`;
 }
 
