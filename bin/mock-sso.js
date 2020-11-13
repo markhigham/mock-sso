@@ -23,9 +23,9 @@ if (argv._.length) {
     process.exit(-1);
   }
   const file = fs.readFileSync(fullPath, "utf8");
-  const json = JSON.parse(file);
+  const user = JSON.parse(file);
 
-  config = Object.assign(config, json);
+  config.user = Object.assign(config.user, user);
 }
 
 config.port = argv.p || config.port;
@@ -100,7 +100,7 @@ process.on("uncaughtException", (err) => {
 });
 
 if (argv.d) {
-  console.log(JSON.stringify(config, null, 2));
+  console.log(JSON.stringify(config.user, null, 2));
   process.exit(0);
 }
 
