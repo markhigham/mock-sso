@@ -110,7 +110,8 @@ app
   .start()
   .then(() => {
     const url = `${config.host}:${config.port}`;
-    console.log(`${appName} listening on ${url}`);
+    const packageConfig = require("../package.json");
+    console.log(`${appName} ${packageConfig.version} listening on ${url}`);
     console.log(`visit http://${url}/config to view current user`);
     console.debug(`logging level is ${config.logLevel}`.gray);
   })

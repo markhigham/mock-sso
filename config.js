@@ -1,7 +1,7 @@
 const uuid = require("uuid");
 const weakId = "_" + new Date().getTime();
 module.exports = {
-  logLevel: process.env.LOG_LEVEL || "error",
+  logLevel: process.env.LOG_LEVEL || "debug",
   host: process.env.HOST || "0.0.0.0",
   port: process.env.PORT || 5000,
   scope: process.env.SCOPE || "read write",
