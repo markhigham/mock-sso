@@ -6,7 +6,6 @@ Simple and stupid mock for an OAUTH2 Ip.
 
     npm install -g mock-sso
 
-
 ### Basic Usage
 
     $ mock-sso
@@ -14,12 +13,11 @@ Simple and stupid mock for an OAUTH2 Ip.
 
 ### Understanding the options
 
-    $ mock-sso -d 
+    $ mock-sso -d
 
 This will dump the config as it will be used. Try this ...
- 
-    $ mock-sso -d -e different@example.com
 
+    $ mock-sso -d -e different@example.com
 
 ### Saving your config
 
@@ -28,7 +26,6 @@ This will dump the config as it will be used. Try this ...
 ### Reusing saved config
 
     $ mock-sso saved-config.json -d
-
 
 ### Help
 
@@ -52,8 +49,3 @@ This will dump the config as it will be used. Try this ...
     -d (Optional) Dump config based on switches and any config files and exit
 
     saved_config_file (Optional) a json file containing the relevant settings
-
-
-
-
-
