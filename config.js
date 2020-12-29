@@ -6,6 +6,7 @@ module.exports = {
   port: process.env.PORT || 5000,
   scope: process.env.SCOPE || "read write",
   username: process.env.USERNAME || "mark",
+  multiple: false,
   user: {
     email: process.env.SSO_EMAIL || "email" + weakId + "@example.com",
     contact_email: process.env.SSO_CONTACT_EMAIL || "contact_email" + weakId + "@example.com",
