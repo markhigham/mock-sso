@@ -1,35 +1,72 @@
 <html>
   <head>
+    <title>mock-sso</title>
     <style>
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        font-size: 16px;
+        padding: 0;
+        margin: 0;
+      }
+
+      .content {
+        padding: 0 1em;
       }
 
       button {
-        padding: 0.5rem 1rem;
+        background: none !important;
+        border: none;
+        padding: 0 !important;
+        /*optional*/
+        font-family: arial, sans-serif;
+        /*input has OS specific font-family*/
+        color: #069;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size: 16px;
       }
+
+      code {
+        display: block;
+        padding: 1em 0;
+      }
+
+      .header {
+        background-color: black;
+        color: white;
+        font-family: monospace;
+      }
+
+      footer {
+        font-size: 80%;
+      }
+
     </style>
   </head>
   <body>
-    <h1>Select a user</h1>
-
-    <% users.forEach(function(user) { %>
-    <form method="POST" action="/select-user">
-      <input type="hidden" value="<%= redirectUri %>" name="redirectUri" />
-      <div>
-        <h2>
-          <%= user.email %>
-        </h2>
-        <code>
-          <pre><%= JSON.stringify(user, null, 2); %></pre>
-        </code>
+    <div class="header">
+      <div class="content">
+        <h1><%= title %></h1>
       </div>
-      <br />
-      <input name="email_user_id" type="hidden" value="<%= user.email_user_id %>" />
-      <button type="submit" name="submit-button"><%= user.email %></button>
-      <br /><br />
-      <hr />
-    </form>
-    <% }); %>
+    </div>
+
+    <div class="content">
+      <h2>Select a user for</h2>
+
+      <% users.forEach(function(user) { %>
+      <form method="POST" action="/select-user">
+        <input type="hidden" value="<%= redirectUri %>" name="redirectUri" />
+        <input name="email_user_id" type="hidden" value="<%= user.email_user_id %>" />
+        <button type="submit" name="submit-button"><%= user.email %></button>
+        <br />
+        <code> <%= JSON.stringify(user); %> </code>
+        <hr />
+      </form>
+      <% }); %>
+    </div>
+
+    <footer>
+      <div class="content"><%= title %> <%= version %> - <%= repo %></div>
+    </footer>
   </body>
 </html>

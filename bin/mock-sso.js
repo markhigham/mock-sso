@@ -113,13 +113,13 @@ if (argv.d) {
   process.exit(0);
 }
 
-const app = new App(config);
+const packageConfig = require("../package.json");
+const app = new App(config, packageConfig.version, packageConfig.repository.url);
 
 app
   .start()
   .then(() => {
     const url = `${config.host}:${config.port}`;
-    const packageConfig = require("../package.json");
     console.log(`${appName} ${packageConfig.version} listening on ${url}`);
     console.log(`visit http://${url}/config to view current user`);
     console.debug(`logging level is ${config.logLevel}`.gray);
