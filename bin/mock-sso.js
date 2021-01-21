@@ -23,7 +23,16 @@ if (argv._.length) {
     process.exit(-1);
   }
   const file = fs.readFileSync(fullPath, "utf8");
-  const user = JSON.parse(file);
+  const users = JSON.parse(file);
+  let user;
+
+  if (Array.isArray(users)) {
+    user = users[0];
+    config.multiple = true;
+    config.users = users;
+  } else {
+    user = users;
+  }
 
   config.user = Object.assign(config.user, user);
 }

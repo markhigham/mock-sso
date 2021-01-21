@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Select a user</h1>
+
+    <% users.forEach(function(user) { %>
+    <form method="POST" action="/select-user">
+      <input type="hidden" value="<%= redirectUri %>" name="redirectUri" />
+      <div>
+        <h2>
+          <%= user.email %>
+        </h2>
+        <code>
+          <pre><%= JSON.stringify(user, null, 2); %></pre>
+        </code>
+      </div>
+      <br />
+      <input name="email_user_id" type="hidden" value="<%= user.email_user_id %>" />
+      <button type="submit" name="submit-button"><%= user.email %></button>
+      <br /><br />
+      <hr />
+    </form>
+    <% }); %>
+  </body>
+</html>
