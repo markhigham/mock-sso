@@ -1,0 +1,7 @@
+---
+applications:
+  - name: dso-mock-sso
+    command: node bin/mock-sso.js
+    memory: 256M
+    buildpacks:
+      - nodejs_buildpack

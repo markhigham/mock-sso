@@ -18,7 +18,7 @@
         border: none;
         padding: 0 !important;
         /*optional*/
-        font-family: arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
         /*input has OS specific font-family*/
         color: #069;
         text-decoration: underline;
@@ -51,11 +51,15 @@
     </div>
 
     <div class="content">
-      <h2>Select a user for</h2>
+      <h2>Select a user</h2>
 
       <% users.forEach(function(user) { %>
       <form method="POST" action="/select-user">
         <input type="hidden" value="<%= redirectUri %>" name="redirectUri" />
+        <pre><%= redirectUri %>
+<%= user.email_user_id %>
+        </pre>
+
         <input name="email_user_id" type="hidden" value="<%= user.email_user_id %>" />
         <button type="submit" name="submit-button"><%= user.email %></button>
         <br />
