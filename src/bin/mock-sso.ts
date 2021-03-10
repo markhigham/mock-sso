@@ -7,7 +7,8 @@ const argv = require("minimist")(process.argv.slice(2), {
 
 import { LogManager } from "../lib/logger";
 import { getConfig } from "../config";
-import { LocalUserStore } from "../lib/local-store";
+import { InMemoryAuthenticatedUserStore } from "../lib/data/in-memory-auth-user-store";
+import { InMemoryUserStore } from "../lib/data/in-memory-user-store";
 
 import { App } from "../lib/app";
 import * as fs from "fs";
@@ -16,6 +17,8 @@ import * as path from "path";
 const logger = LogManager.getLogger(__filename);
 
 let config = getConfig();
+
+const userStore = new InMemoryUserStore();
 
 if (argv._.length) {
   const filename = argv._[0];
@@ -29,17 +32,12 @@ if (argv._.length) {
   }
   const file = fs.readFileSync(fullPath, "utf8");
   const users = JSON.parse(file);
-  let user;
 
-  if (Array.isArray(users)) {
-    user = users[0];
-    config.multiple = true;
-    config.users = users;
-  } else {
-    user = users;
+  if (!Array.isArray(users)) {
+    throw "Expected users to be an array";
   }
-  logger.debug(users);
-  config.user = Object.assign(config.user, user);
+
+  userStore.load(users);
 }
 
 config.port = argv.p || config.port;
@@ -118,15 +116,14 @@ if (argv.d) {
   process.exit(0);
 }
 
-const packageConfig = require("../../package.json");
-const store = new LocalUserStore();
-const app = new App(store, config, packageConfig.version, packageConfig.repository.url);
+const authenticatedUserStore = new InMemoryAuthenticatedUserStore();
+const app = new App(userStore, authenticatedUserStore, config);
 
 app
   .start()
   .then(() => {
     const url = `${config.host}:${config.port}`;
-    console.log(`${appName} ${packageConfig.version} listening on ${url}`);
+    console.log(`${appName} ${config.version} listening on ${url}`);
     console.log(`visit http://${url}/config to view current user`);
     console.debug(`logging level is ${config.logLevel}`);
   })

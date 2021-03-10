@@ -14,15 +14,11 @@
     <% users.forEach(function(user) { %>
         <form method="POST" action="/select-user">
             <input type="hidden" value="<%= redirectUri ;%>" name="redirectUri" />
-            <pre><%= redirectUri ;%>
-                <%= user.email_user_id ;%>
-        </pre>
 
             <input name="email_user_id" type="hidden" value="<%= user.email_user_id ;%>" />
             <button type="submit" name="submit-button"><%= user.email ;%></button>
-            <br />
-            <code> <%= JSON.stringify(user); %> </code>
-            <hr />
+            <%= user.first_name %> <%= user.last_name %>
+<br>
         </form>
     <% }); %>
 </div>
