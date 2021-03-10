@@ -5,12 +5,17 @@ const argv = require("minimist")(process.argv.slice(2), {
   string: ["host", "b"],
 });
 
-const colors = require("colors");
-const logger = require("../lib/logger")(__filename);
-const App = require("../lib/app");
-let config = require("../config");
-const fs = require("fs");
-const path = require("path");
+import { LogManager } from "../lib/logger";
+import { getConfig } from "../config";
+import { LocalUserStore } from "../lib/local-store";
+
+import { App } from "../lib/app";
+import * as fs from "fs";
+import * as path from "path";
+
+const logger = LogManager.getLogger(__filename);
+
+let config = getConfig();
 
 if (argv._.length) {
   const filename = argv._[0];
@@ -19,7 +24,7 @@ if (argv._.length) {
 
   if (!fs.existsSync(fullPath)) {
     const msg = `${fullPath} could not be opened`;
-    console.error(msg.red);
+    console.error(msg);
     process.exit(-1);
   }
   const file = fs.readFileSync(fullPath, "utf8");
@@ -33,7 +38,7 @@ if (argv._.length) {
   } else {
     user = users;
   }
-
+  logger.debug(users);
   config.user = Object.assign(config.user, user);
 }
 
@@ -97,13 +102,13 @@ if (argv.help) {
 }
 
 if (isNaN(config.port)) {
-  console.error(`PORT must be numeric ${config.port}`.red);
+  console.error(`PORT must be numeric ${config.port}`);
   showHelp();
   process.exit(-1);
 }
 
 process.on("uncaughtException", (err) => {
-  console.error("Something unexpected happened. See the error code below".red);
+  console.error("Something unexpected happened. See the error code below");
   console.error(err);
   process.exit(-1);
 });
@@ -113,8 +118,9 @@ if (argv.d) {
   process.exit(0);
 }
 
-const packageConfig = require("../package.json");
-const app = new App(config, packageConfig.version, packageConfig.repository.url);
+const packageConfig = require("../../package.json");
+const store = new LocalUserStore();
+const app = new App(store, config, packageConfig.version, packageConfig.repository.url);
 
 app
   .start()
@@ -122,7 +128,7 @@ app
     const url = `${config.host}:${config.port}`;
     console.log(`${appName} ${packageConfig.version} listening on ${url}`);
     console.log(`visit http://${url}/config to view current user`);
-    console.debug(`logging level is ${config.logLevel}`.gray);
+    console.debug(`logging level is ${config.logLevel}`);
   })
   .catch((err) => {
     console.error("Something failed", err);
@@ -131,13 +137,13 @@ app
 
 function stopApp() {
   app
-    .stop((err) => {
+    .stop()
+    .then((err) => {
       if (err) {
         console.error(err);
         process.exit(1);
       }
 
-      clearTimeout(timeout);
       logger.debug("exiting");
       process.exit(0);
     })

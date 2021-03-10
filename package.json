@@ -16,7 +16,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node bin/mock-sso.js",
     "build": "tsc",
-    "build:watch": "tsc -w"
+    "build:watch": "tsc -w",
+    "sass": "node-sass public/scss --output public/css",
+    "sass:watch": "node-sass --watch public/scss --output public/css"
   },
   "engines": {
     "node": "12.20.x"
@@ -37,6 +39,7 @@
   "devDependencies": {
     "@types/node": "^14.14.33",
     "husky": "^4.3.8",
+    "node-sass": "^5.0.0",
     "nodemon": "^2.0.7",
     "prettier": "2.2.1",
     "pretty-quick": "^3.1.0",

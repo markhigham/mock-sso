@@ -1,4 +1,7 @@
 import * as winston from "winston";
+import * as path from "path";
+
+// import { ConfigurationManager } from "./configuration";
 
 export interface ILogger {
   debug(...any): void;
@@ -9,45 +12,60 @@ export interface ILogger {
 }
 
 export class LogManager {
-  static namespace: string = "ruler";
   static logger: winston.Logger;
 
-  static setNamespace(value: string): void {
-    this.namespace = value;
-  }
+  private static makeLogger(): winston.Logger {
+    // const config = ConfigurationManager.getConfig();
 
-  static getNullLogger(): ILogger {
-    function nullLog() {}
-    return {
-      debug: nullLog,
-      error: nullLog,
-      info: nullLog,
-      warn: nullLog,
-      verbose: nullLog,
-    };
-  }
-
-  static getLogger(name: string): ILogger {
-    if (typeof this.logger === "undefined") {
-      const consoleFormat = winston.format.combine(
+    const logger = winston.createLogger({
+      level: "debug",
+      format: winston.format.combine(
         winston.format.timestamp(),
-        winston.format.colorize(),
+        winston.format.errors({ stack: true }),
+        winston.format.simple(),
         winston.format.metadata(),
+        winston.format.colorize(),
+
         winston.format.printf((loginfo) => {
-          return `${loginfo.level} ${loginfo.metadata.timestamp} ${loginfo.metadata.service} ${loginfo.message}`;
+          let json = "Error!";
+          let stack = "";
+          try {
+            if (typeof loginfo.message === "object") json = JSON.stringify(loginfo.message);
+            else json = loginfo.message;
+
+            if (loginfo.metadata.stack) {
+              stack = loginfo.metadata.stack;
+            }
+          } catch (e) {
+            // Oh shit!
+            console.error(e);
+          }
+          return `${loginfo.metadata.name} ${loginfo.level} ${json}${stack}`;
         })
-      );
+      ),
+      transports: [
+        new winston.transports.Console({
+          stderrLevels: ["error"],
+        }),
+      ],
+    });
 
-      const logger = winston.createLogger({
-        format: winston.format.combine(winston.format.timestamp(), winston.format.colorize(), winston.format.simple()),
-        level: "debug",
-        transports: [new winston.transports.Console()],
-      });
+    return logger;
+  }
 
-      this.logger = logger;
+  static getLogger(filename: string): ILogger {
+    const name = path.basename(filename);
+    if (typeof this.logger === "undefined") {
+      this.logger = this.makeLogger();
+    }
+    return this.logger.child({ filename: filename, name: name });
+  }
+
+  static getNamedLogger(name: string): ILogger {
+    if (typeof this.logger === "undefined") {
+      this.logger = this.makeLogger();
     }
 
-    const fullName = `${this.namespace}:${name}`;
-    return this.logger.child({ service: fullName });
+    return this.logger.child({ service: name });
   }
 }

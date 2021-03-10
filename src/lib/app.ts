@@ -4,6 +4,8 @@ import { ILogger, LogManager } from "./logger";
 import * as express from "express";
 
 import * as stoppable from "stoppable";
+import { authorizeMultipleUsers } from "./routes/selectUsers";
+import { IUserStore } from "./local-store";
 
 interface IConfig {
   port: number;
@@ -11,11 +13,11 @@ interface IConfig {
 }
 
 export class App {
-  private logger: ILogger;
+  private readonly logger: ILogger;
   private app: any;
   private server: any;
 
-  constructor(private config: IConfig) {
+  constructor(private userStore: IUserStore, private config: IConfig, packageVersion: string, repoUrl: string) {
     this.logger = LogManager.getLogger(__filename);
 
     this.app = express();
@@ -24,28 +26,16 @@ export class App {
     this.app.use(express.urlencoded({ extended: true }));
 
     this.app.set("view engine", "ejs");
+    const staticDir = path.join(__dirname + "/../../public");
+    this.logger.debug(`staticDir is ${staticDir}`);
+    this.app.use(express.static(staticDir));
 
     this.setupRoutes();
   }
 
-  private authorizeMultipleUsers(req, res) {
-    this.logger.info("authorize for multiple users");
-    // const redirectTo = makeRedirectUrl(req.query["redirect_uri"], req.query["state"]);
-    // const sortedUsers = config.users.sort((a, b) => {
-    //   return a.email.localeCompare(b.email);
-    // });
-    res.render("multiple", {
-      redirectUri: "redirectTo",
-      users: [],
-      title: `mock-sso`,
-      version: "versionInfo",
-      repo: "repoUrl",
-    });
-  }
-
   private setupRoutes() {
     this.logger.debug("setup routes");
-    this.app.get("/o/authorize", this.authorizeMultipleUsers.bind(this));
+    this.app.get("/o/authorize", authorizeMultipleUsers);
   }
 
   start(): Promise<any> {
@@ -62,6 +52,27 @@ export class App {
       });
 
       this.server = stoppable(httpServer, 0);
+    });
+  }
+
+  stop(): Promise<any> {
+    if (!this.server.listening) {
+      this.logger.debug("server not listening!");
+      return Promise.resolve();
+    }
+
+    const logger = this.logger;
+    return new Promise((resolve, reject) => {
+      // https://stackoverflow.com/a/36830072/155965
+      this.server.stop(function (err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        logger.debug("server.close ok");
+        resolve(undefined);
+      });
     });
   }
 }
@@ -185,26 +196,6 @@ export class App {
 //       });
 
 //       server = stoppable(httpServer, 0);
-//     });
-//   }
-
-//   function stop() {
-//     if (!server.listening) {
-//       logger.debug("server not listening!");
-//       return Promise.resolve();
-//     }
-
-//     return new Promise((resolve, reject) => {
-//       // https://stackoverflow.com/a/36830072/155965
-//       server.stop(function (err) {
-//         if (err) {
-//           reject(err);
-//           return;
-//         }
-
-//         logger.debug("server.close ok");
-//         resolve();
-//       });
 //     });
 //   }
 
