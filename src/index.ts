@@ -3,7 +3,7 @@
 
 import { App } from "./lib/app";
 
-const app = new App({ port: 8000, host: "0.0.0.0" });
+const app = new App({ port: 5000, host: "0.0.0.0" });
 app.start().then(() => {
   console.log("yo");
 });

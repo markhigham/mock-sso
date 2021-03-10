@@ -12,9 +12,11 @@
     "url": "https://github.com/markhigham/mock-sso"
   },
   "scripts": {
-    "debug": "LOG_LEVEL=debug nodemon dist/bin/mock-sso.js",
+    "debug": "LOG_LEVEL=debug nodemon dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node bin/mock-sso.js"
+    "start": "node bin/mock-sso.js",
+    "build": "tsc",
+    "build:watch": "tsc -w"
   },
   "engines": {
     "node": "12.20.x"

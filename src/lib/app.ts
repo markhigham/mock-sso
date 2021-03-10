@@ -3,6 +3,8 @@ import * as path from "path";
 import { ILogger, LogManager } from "./logger";
 import * as express from "express";
 
+import * as stoppable from "stoppable";
+
 interface IConfig {
   port: number;
   host: string;
@@ -15,13 +17,35 @@ export class App {
 
   constructor(private config: IConfig) {
     this.logger = LogManager.getLogger(__filename);
-    this.logger.debug("hello");
 
     this.app = express();
-    const app = express();
 
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+
+    this.app.set("view engine", "ejs");
+
+    this.setupRoutes();
+  }
+
+  private authorizeMultipleUsers(req, res) {
+    this.logger.info("authorize for multiple users");
+    // const redirectTo = makeRedirectUrl(req.query["redirect_uri"], req.query["state"]);
+    // const sortedUsers = config.users.sort((a, b) => {
+    //   return a.email.localeCompare(b.email);
+    // });
+    res.render("multiple", {
+      redirectUri: "redirectTo",
+      users: [],
+      title: `mock-sso`,
+      version: "versionInfo",
+      repo: "repoUrl",
+    });
+  }
+
+  private setupRoutes() {
+    this.logger.debug("setup routes");
+    this.app.get("/o/authorize", this.authorizeMultipleUsers.bind(this));
   }
 
   start(): Promise<any> {
@@ -37,7 +61,7 @@ export class App {
         resolve({});
       });
 
-      // server = stoppable(httpServer, 0);
+      this.server = stoppable(httpServer, 0);
     });
   }
 }
@@ -69,21 +93,6 @@ export class App {
 
 //     logger.debug(redirectTo);
 //     return redirectTo;
-//   }
-
-//   function authorizeMultipleUsers(req, res) {
-//     logger.info("authorize for multiple users");
-//     const redirectTo = makeRedirectUrl(req.query["redirect_uri"], req.query["state"]);
-//     const sortedUsers = config.users.sort((a, b) => {
-//       return a.email.localeCompare(b.email);
-//     });
-//     res.render("multiple", {
-//       redirectUri: redirectTo,
-//       users: sortedUsers,
-//       title: `mock-sso`,
-//       version: versionInfo,
-//       repo: repoUrl,
-//     });
 //   }
 
 //   function selectFromMultipleUsers(req, res) {
