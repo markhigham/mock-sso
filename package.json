@@ -12,7 +12,7 @@
     "url": "https://github.com/markhigham/mock-sso"
   },
   "scripts": {
-    "debug": "LOG_LEVEL=debug nodemon bin/mock-sso.js",
+    "debug": "LOG_LEVEL=debug nodemon dist/bin/mock-sso.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node bin/mock-sso.js"
   },
@@ -33,10 +33,12 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@types/node": "^14.14.33",
     "husky": "^4.3.8",
     "nodemon": "^2.0.7",
     "prettier": "2.2.1",
-    "pretty-quick": "^3.1.0"
+    "pretty-quick": "^3.1.0",
+    "typescript": "^4.2.3"
   },
   "husky": {
     "hooks": {
