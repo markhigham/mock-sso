@@ -36,7 +36,7 @@ export class App {
 
   private setupRoutes() {
     this.logger.debug("setup routes");
-    const authRoutes = new AuthorizeUserRoutes(this.userStore, this.authenticatedUserStore);
+    const authRoutes = new AuthorizeUserRoutes(this.userStore, this.authenticatedUserStore, this.config);
     this.app.get("/o/authorize", authRoutes.get.bind(authRoutes));
     this.app.post("/select-user", authRoutes.post.bind(authRoutes));
 
@@ -74,7 +74,7 @@ export class App {
     const logger = this.logger;
     return new Promise((resolve, reject) => {
       // https://stackoverflow.com/a/36830072/155965
-      this.server.stop(function (err) {
+      this.server.stop(function(err) {
         if (err) {
           reject(err);
           return;

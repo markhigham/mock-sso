@@ -3,6 +3,7 @@ import * as uuid from "uuid";
 import { ILogger, LogManager } from "../logger";
 import { IAuthenticatedUserStore, IUserStore } from "../data/interfaces";
 import { getUserCode } from "./utils";
+import { IConfig } from "../../config";
 
 const logger = LogManager.getLogger(__filename);
 
@@ -17,7 +18,7 @@ function makeRedirectUrl(originalRedirectUri: string, state: string, code: strin
 export class AuthorizeUserRoutes {
   private logger: ILogger;
 
-  constructor(private userStore: IUserStore, private authStore: IAuthenticatedUserStore) {
+  constructor(private userStore: IUserStore, private authStore: IAuthenticatedUserStore, private config : IConfig) {
     this.logger = LogManager.getLogger(__filename);
   }
 
@@ -55,8 +56,8 @@ export class AuthorizeUserRoutes {
       redirectUri: redirectTo,
       users: sortedUsers,
       title: `mock-sso`,
-      version: "versionInfo",
-      repo: "repoUrl",
+      version: this.config.version,
+      repo: this.config.repoUrl,
     };
 
     res.render("multiple", context);
