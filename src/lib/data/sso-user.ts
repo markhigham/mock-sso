@@ -1,7 +1,6 @@
 import * as uuid from "uuid";
 import { ISSOUser } from "./interfaces";
 
-
 export class SSOUser implements ISSOUser {
   readonly contact_email: string;
   readonly email: string;
@@ -24,5 +23,4 @@ export class SSOUser implements ISSOUser {
 
     this.user_id = uuid.v4();
   }
-
 }

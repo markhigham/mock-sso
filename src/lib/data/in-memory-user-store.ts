@@ -31,15 +31,13 @@ export class InMemoryUserStore implements IUserStore {
   }
 
   remove(emailUserId: string): ISSOUser {
-    const index = this.users.findIndex(u => u.email_user_id == emailUserId);
+    const index = this.users.findIndex((u) => u.email_user_id == emailUserId);
     let user: ISSOUser = null;
     if (index > -1) {
       user = this.users[index];
       this.users.splice(index, 1);
-
     }
 
     return user;
   }
-
 }

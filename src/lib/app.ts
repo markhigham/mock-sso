@@ -83,7 +83,7 @@ export class App {
     const logger = this.logger;
     return new Promise((resolve, reject) => {
       // https://stackoverflow.com/a/36830072/155965
-      this.server.stop(function(err) {
+      this.server.stop(function (err) {
         if (err) {
           reject(err);
           return;

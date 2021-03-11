@@ -1,5 +1,4 @@
 import * as url from "url";
-import * as uuid from "uuid";
 import { ILogger, LogManager } from "../logger";
 import { IAuthenticatedUserStore, IUserStore } from "../data/interfaces";
 import { getUserCode } from "./utils";
@@ -23,7 +22,6 @@ export class AuthorizeUserRoutes {
     this.logger = LogManager.getLogger(__filename);
   }
 
-
   create(req, res) {
     this.logger.info(`${req.method} ${req.originalUrl}`);
 
@@ -41,13 +39,12 @@ export class AuthorizeUserRoutes {
     this.authStore.set(userCode, user);
 
     res.redirect(redirectUri);
-
   }
 
   removeUser(req, res, emailUserId, redirectUri) {
     this.logger.debug("removeUser");
     const user = this.userStore.remove(emailUserId);
-    if(user) {
+    if (user) {
       res.status(200).send(`${user.email} was removed. You should go back to your app and re-authenticate`);
     } else {
       res.status(400);
@@ -92,11 +89,9 @@ export class AuthorizeUserRoutes {
       users: sortedUsers,
       title: `mock-sso`,
       version: this.config.version,
-      repo: this.config.repoUrl
+      repo: this.config.repoUrl,
     };
 
     res.render("multiple", context);
   }
-
-
 }
