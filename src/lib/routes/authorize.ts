@@ -43,7 +43,8 @@ export class AuthorizeUserRoutes {
 
   removeUser(req, res, emailUserId, redirectUri) {
     this.logger.debug("removeUser");
-    const user = this.userStore.remove(emailUserId);
+    const code = getUserCode(req, res);
+    const user = this.userStore.remove(code, emailUserId);
     if (user) {
       res.status(200).send(`${user.email} was removed. You should go back to your app and re-authenticate`);
     } else {
@@ -80,9 +81,14 @@ export class AuthorizeUserRoutes {
     this.logger.info("authorize for multiple users");
     const code = getUserCode(req, res);
     const redirectTo = makeRedirectUrl(req.query["redirect_uri"], req.query["state"], code);
-    const sortedUsers = this.userStore.getAll().sort((a, b) => {
-      return a.email.localeCompare(b.email);
-    });
+
+    let sortedUsers = [];
+
+    if (this.userStore.count(code)) {
+      sortedUsers = this.userStore.getAll(code).sort((a, b) => {
+        return a.email.localeCompare(b.email);
+      });
+    }
 
     const context = {
       redirectUri: redirectTo,

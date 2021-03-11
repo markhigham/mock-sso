@@ -51,10 +51,6 @@ export class App {
     this.app.get("/debug/auth", (req, res) => {
       res.json(this.authenticatedUserStore.dump());
     });
-
-    this.app.get("/debug/users", (req, res) => {
-      res.json(this.userStore.getAll());
-    });
   }
 
   start(): Promise<any> {

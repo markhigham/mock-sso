@@ -11,11 +11,12 @@ export interface IAuthenticatedUserStore {
 export interface IUserStore {
   load(users: ISSOUser[]);
 
-  getAll(): ISSOUser[];
+  getAll(userKey: string): ISSOUser[];
+  count(userKey: string): number;
 
-  find(emailUserId: string): any;
+  find(userKey: string, emailUserId: string): any;
 
-  remove(emailUserId: string): ISSOUser;
+  remove(userKey: string, emailUserId: string): ISSOUser;
 
   add(user: ISSOUser): void;
 }

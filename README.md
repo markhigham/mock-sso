@@ -11,14 +11,6 @@ Simple and stupid mock for an OAUTH2 Ip.
     $ mock-sso
     mock-sso listening on 0.0.0.0:5000
 
-### Understanding the options
-
-    $ mock-sso -d
-
-This will dump the config as it will be used. Try this ...
-
-    $ mock-sso -d -e different@example.com
-
 ### Saving your config
 
     $ mock-sso -e email@example.com -c contact@example.com -d > saved-config.json

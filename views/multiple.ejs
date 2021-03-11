@@ -29,8 +29,21 @@
 
   function remove(emailUserId, email) {
     if (!confirm(`Delete ${email}`)) return;
-    const button = document.getElementById(`submit_button_${emailUserId}`);
+    setFormEmailUserId(emailUserId);
+    const button = document.getElementById("removeButton");
     button.click();
+  }
+
+  function setFormEmailUserId(emailUserId) {
+    const form = document.getElementById("loginForm");
+    const emailInput = document.getElementById("emailUserId");
+    emailInput.value = emailUserId;
+    return form;
+  }
+
+  function login(emailUserId) {
+    const form = setFormEmailUserId(emailUserId);
+    form.submit();
   }
 
 </script>
@@ -60,46 +73,49 @@
 
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper " id="main-content" role="main">
-        <h1 class="govuk-heading-l">Login as an existing user</h1>
+        <% if (users.length){ %>
+            <h1 class="govuk-heading-l">Login as an existing user</h1>
 
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <div style="max-height: 30rem;overflow-y:scroll;">
-                    <dl class="govuk-summary-list">
-                        <% users.forEach(function(user) { %>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    <%= user.first_name; %> <%= user.last_name %>
-                                </dt>
 
-                                <dd class="govuk-summary-list__value">
-                                    <%= user.email %>
-                                </dd>
+            <form id="loginForm" method="post" action="/select-user" style="display:none;">
+                <input type="text" value="<%= redirectUri; %>" name="redirectUri" />
+                <input type="text" name="email_user_id" id="emailUserId" />
+                <button type="submit" name="submit_button" value="remove-user" id="removeButton">Remove</button>
+            </form>
 
-                                <dd class="govuk-summary-list__actions">
-                                    <form method="POST" action="/select-user">
-                                        <input type="hidden" value="<%= redirectUri; %>" name="redirectUri" />
-                                        <input name="email_user_id" type="hidden" value="<%= user.email_user_id; %>" />
-                                        <button class="govuk-link__fake" type="submit"
-                                                name="submit_button">Select
-                                        </button>
+            <div class="govuk-grid-row govuk-!-margin-bottom-8">
+                <div class="govuk-grid-column-two-thirds">
+                    <div style="max-height: 30rem;overflow-y:scroll;">
+                        <dl class="govuk-summary-list">
+                            <% users.forEach(function(user) { %>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        <a
+                                                onclick="login('<%= user.email_user_id %>')"
+                                                class="govuk-link__fake" style="font-weight: bold;">
+                                            <%= user.first_name; %> <%= user.last_name %>
+                                        </a>
+
+                                    </dt>
+
+                                    <dd class="govuk-summary-list__value">
+                                        <%= user.email %>
+                                    </dd>
+
+                                    <dd class="govuk-summary-list__actions">
                                         <a class="govuk-link__fake"
                                            onclick="remove('<%= user.email_user_id %>', '<%= user.email %>')">Remove</a>
-                                        <button class="govuk-link__fake" type="submit" style="display:none;"
-                                                id="submit_button_<%= user.email_user_id %>"
-                                                name="submit_button" value="remove-user">Remove
-                                        </button>
-                                    </form>
-                                </dd>
 
-                            </div>
-                        <% }); %>
-                    </dl>
+                                    </dd>
+
+                                </div>
+                            <% }); %>
+                        </dl>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="govuk-grid-row govuk-!-margin-top-8">
+        <% } %>
+        <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <h2 class="govuk-heading-l">Login as a new user</h2>
 
