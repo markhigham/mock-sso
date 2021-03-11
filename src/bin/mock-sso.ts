@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import { UserService } from "../lib/data/user-service";
+
 const argv = require("minimist")(process.argv.slice(2), {
   alias: { h: "host" },
   string: ["host", "b"],
@@ -8,11 +10,11 @@ const argv = require("minimist")(process.argv.slice(2), {
 import { LogManager } from "../lib/logger";
 import { getConfig } from "../config";
 import { InMemoryAuthenticatedUserStore } from "../lib/data/in-memory-auth-user-store";
-import { InMemoryUserStore } from "../lib/data/in-memory-user-store";
 
 import { App } from "../lib/app";
 import * as fs from "fs";
 import * as path from "path";
+import { InMemoryUserList } from "../lib/data/user-list";
 
 const logger = LogManager.getLogger(__filename);
 
@@ -37,10 +39,10 @@ if (argv._.length) {
     throw "Expected users to be an array";
   }
 
-  initialUsers.push(...users);
+  users.forEach((u) => {
+    initialUsers.push(u);
+  });
 }
-
-const userStore = new InMemoryUserStore(initialUsers);
 
 config.port = argv.p || config.port;
 config.host = argv.h || config.host;
@@ -81,7 +83,11 @@ process.on("uncaughtException", (err) => {
 });
 
 const authenticatedUserStore = new InMemoryAuthenticatedUserStore();
-const app = new App(userStore, authenticatedUserStore, config);
+
+const commonUserList = new InMemoryUserList(initialUsers);
+const service = new UserService(commonUserList);
+
+const app = new App(service, authenticatedUserStore, config);
 
 app
   .start()

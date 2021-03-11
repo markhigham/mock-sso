@@ -1,9 +1,10 @@
 import * as url from "url";
 import { ILogger, LogManager } from "../logger";
-import { IAuthenticatedUserStore, IUserStore } from "../data/interfaces";
+import { IAuthenticatedUserStore } from "../data/interfaces";
 import { getUserCode } from "./utils";
 import { IConfig } from "../../config";
 import { SSOUser } from "../data/sso-user";
+import { IUserService } from "../data/user-service";
 
 const logger = LogManager.getLogger(__filename);
 
@@ -18,7 +19,7 @@ function makeRedirectUrl(originalRedirectUri: string, state: string, code: strin
 export class AuthorizeUserRoutes {
   private logger: ILogger;
 
-  constructor(private userStore: IUserStore, private authStore: IAuthenticatedUserStore, private config: IConfig) {
+  constructor(private userService: IUserService, private authStore: IAuthenticatedUserStore, private config: IConfig) {
     this.logger = LogManager.getLogger(__filename);
   }
 
@@ -33,9 +34,8 @@ export class AuthorizeUserRoutes {
     const user = new SSOUser(email, firstName, lastName);
     this.logger.debug(user);
 
-    this.userStore.add(user);
-
     const userCode = getUserCode(req, res);
+    this.userService.add(userCode, user);
     this.authStore.set(userCode, user);
 
     res.redirect(redirectUri);
@@ -44,11 +44,11 @@ export class AuthorizeUserRoutes {
   removeUser(req, res, emailUserId, redirectUri) {
     this.logger.debug("removeUser");
     const code = getUserCode(req, res);
-    const user = this.userStore.remove(code, emailUserId);
+    const user = this.userService.remove(code, emailUserId);
     if (user) {
       res.status(200).send(`${user.email} was removed. You should go back to your app and re-authenticate`);
     } else {
-      res.status(400);
+      res.status(400).send(`${emailUserId} was not found`);
     }
   }
 
@@ -62,7 +62,7 @@ export class AuthorizeUserRoutes {
 
     if (action == "remove-user") return this.removeUser(req, res, emailUserId, redirectUri);
 
-    const user = this.userStore.find(emailUserId);
+    const user = this.userService.find(userCode, emailUserId);
 
     if (!user) {
       res.status(500).send(`User ${emailUserId} has gone missing`);
@@ -84,8 +84,9 @@ export class AuthorizeUserRoutes {
 
     let sortedUsers = [];
 
-    if (this.userStore.count(code)) {
-      sortedUsers = this.userStore.getAll(code).sort((a, b) => {
+    const availableUsers = this.userService.getAvailableUsers(code);
+    if (availableUsers && availableUsers.length) {
+      sortedUsers = availableUsers.sort((a, b) => {
         return a.email.localeCompare(b.email);
       });
     }

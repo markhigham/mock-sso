@@ -1,5 +1,7 @@
-import * as uuid from "uuid";
-
+/**
+ * Stores authentication details for
+ * users against their key
+ */
 export interface IAuthenticatedUserStore {
   get(key: string);
 
@@ -8,18 +10,19 @@ export interface IAuthenticatedUserStore {
   dump(): any;
 }
 
-export interface IUserStore {
-  load(users: ISSOUser[]);
-
-  getAll(userKey: string): ISSOUser[];
-  count(userKey: string): number;
-
-  find(userKey: string, emailUserId: string): any;
-
-  remove(userKey: string, emailUserId: string): ISSOUser;
-
-  add(user: ISSOUser): void;
-}
+// export interface IUserStore {
+//   load(users: ISSOUser[]);
+//
+//   getAll(userKey: string): ISSOUser[];
+//
+//   count(userKey: string): number;
+//
+//   find(userKey: string, emailUserId: string): any;
+//
+//   remove(userKey: string, emailUserId: string): ISSOUser;
+//
+//   add(user: ISSOUser): void;
+// }
 
 export interface ISSOUser {
   email: string;

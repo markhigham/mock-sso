@@ -8,15 +8,15 @@ export class SSOUser implements ISSOUser {
 
   readonly first_name: string;
   readonly last_name: string;
-
   readonly user_id: string;
 
-  constructor(email: string, firstName: string, lastName: string) {
+  constructor(email: string, firstName: string, lastName: string, emailUserId?: string) {
     const weakId = "_" + new Date().getTime();
 
     this.email = email;
     this.contact_email = email;
-    this.email_user_id = `${email}${weakId}`;
+    if (emailUserId) this.email_user_id = emailUserId;
+    else this.email_user_id = `${email}${weakId}`;
 
     this.first_name = firstName;
     this.last_name = lastName;

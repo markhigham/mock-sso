@@ -6,17 +6,18 @@ import * as cookieParser from "cookie-parser";
 
 import * as stoppable from "stoppable";
 import { AuthorizeUserRoutes } from "./routes/authorize";
-import { IAuthenticatedUserStore, IUserStore } from "./data/interfaces";
+import { IAuthenticatedUserStore } from "./data/interfaces";
 import { IConfig } from "../config";
 import { TokenRoutes } from "./routes/token";
 import { UserRoutes } from "./routes/user";
+import { IUserService } from "./data/user-service";
 
 export class App {
   private readonly logger: ILogger;
   private app: any;
   private server: any;
 
-  constructor(private userStore: IUserStore, private authenticatedUserStore: IAuthenticatedUserStore, private config: IConfig) {
+  constructor(private userService: IUserService, private authenticatedUserStore: IAuthenticatedUserStore, private config: IConfig) {
     this.logger = LogManager.getLogger(__filename);
 
     this.app = express();
@@ -36,7 +37,7 @@ export class App {
 
   private setupRoutes() {
     this.logger.debug("setup routes");
-    const authRoutes = new AuthorizeUserRoutes(this.userStore, this.authenticatedUserStore, this.config);
+    const authRoutes = new AuthorizeUserRoutes(this.userService, this.authenticatedUserStore, this.config);
     this.app.get("/o/authorize", authRoutes.get.bind(authRoutes));
     this.app.post("/select-user", authRoutes.post.bind(authRoutes));
     this.app.post("/create-user", authRoutes.create.bind(authRoutes));
