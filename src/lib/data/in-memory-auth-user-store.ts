@@ -15,6 +15,9 @@ export class InMemoryAuthenticatedUserStore implements IAuthenticatedUserStore {
   }
 
   get(key: string): any {
-    return this.store[key];
+    this.logger.debug(`lookup ${key}`);
+    const user = this.store[key];
+    this.logger.debug(user);
+    return user;
   }
 }

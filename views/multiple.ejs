@@ -57,7 +57,7 @@
         <h1 class="govuk-heading-l">Select an existing user</h1>
 
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-grid-column-full">
                 <dl class="govuk-summary-list">
                     <% users.forEach(function(user) { %>
                         <div class="govuk-summary-list__row">
@@ -74,7 +74,10 @@
                                     <input type="hidden" value="<%= redirectUri; %>" name="redirectUri" />
                                     <input name="email_user_id" type="hidden" value="<%= user.email_user_id; %>" />
                                     <button class="govuk-link__fake" type="submit"
-                                            name="submit-button">Select
+                                            name="submit_button">Select
+                                    </button>
+                                    <button class="govuk-link__fake" type="submit"
+                                            name="submit_button" value="remove-user">Remove
                                     </button>
                                 </form>
                             </dd>
@@ -85,9 +88,35 @@
             </div>
         </div>
 
-        <div class="govuk-grid-row">
+        <div class="govuk-grid-row govuk-!-margin-top-8">
             <div class="govuk-grid-column-two-thirds">
                 <h2 class="govuk-heading-l">Add a new user</h2>
+
+                <form action="/create-user" method="post">
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-one-half">
+                            <div class="govuk-form-group">
+                                <label class="govuk-label" for="first_name">First name</label>
+                                <input type="text" class="govuk-input" id="first_name" name="first_name" required />
+                            </div>
+                        </div>
+                        <div class="govuk-grid-column-one-half">
+                            <div class="govuk-form-group">
+                                <label class="govuk-label" for="last_name">Last name</label>
+                                <input type="text" class="govuk-input" id="last_name" name="last_name" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" for="email">Email</label>
+                        <input type="email" class="govuk-input govuk-input--width-20" id="email" name="email"
+                               required />
+                    </div>
+                    <div class="govuk-form-group">
+                        <input type="hidden" value="<%= redirectUri; %>" name="redirectUri" />
+                        <input type="submit" class="govuk-button" value="Create and login" />
+                    </div>
+                </form>
             </div>
         </div>
 

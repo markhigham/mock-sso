@@ -1,27 +1,39 @@
-import { IUserStore } from "./interfaces";
+import { ISSOUser, IUserStore } from "./interfaces";
 import { ILogger, LogManager } from "../logger";
 
 export class InMemoryUserStore implements IUserStore {
-  private users: any[];
+  private users: ISSOUser[];
   private logger: ILogger;
 
   constructor() {
     this.logger = LogManager.getLogger(__filename);
   }
 
-  load(users: any[]) {
+  load(users: ISSOUser[]) {
     this.logger.debug(`loading users ${users.length}`);
     this.users = users;
   }
 
-  getAll(): any[] {
+  getAll(): ISSOUser[] {
     return this.users;
   }
 
-  find(emailUserId: string): any {
+  add(user: ISSOUser): void {
+    this.logger.debug(`adding ${user.email} to store`);
+    this.users.push(user);
+  }
+
+  find(emailUserId: string): ISSOUser {
     this.logger.debug(`looking for ${emailUserId}`);
     return this.users.find((u) => {
       return u.email_user_id == emailUserId;
     });
   }
+
+  remove(emailUserId: string) {
+    const index = this.users.findIndex(u => u.email_user_id == emailUserId);
+    if (index > -1)
+      this.users.splice(index, 1);
+  }
+
 }

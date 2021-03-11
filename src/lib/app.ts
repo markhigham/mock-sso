@@ -39,6 +39,7 @@ export class App {
     const authRoutes = new AuthorizeUserRoutes(this.userStore, this.authenticatedUserStore, this.config);
     this.app.get("/o/authorize", authRoutes.get.bind(authRoutes));
     this.app.post("/select-user", authRoutes.post.bind(authRoutes));
+    this.app.post("/create-user", authRoutes.create.bind(authRoutes));
 
     const tokenRoutes = new TokenRoutes();
     this.app.post("/o/token", tokenRoutes.post.bind(tokenRoutes));

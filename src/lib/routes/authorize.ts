@@ -4,6 +4,7 @@ import { ILogger, LogManager } from "../logger";
 import { IAuthenticatedUserStore, IUserStore } from "../data/interfaces";
 import { getUserCode } from "./utils";
 import { IConfig } from "../../config";
+import { SSOUser } from "../data/sso-user";
 
 const logger = LogManager.getLogger(__filename);
 
@@ -18,16 +19,44 @@ function makeRedirectUrl(originalRedirectUri: string, state: string, code: strin
 export class AuthorizeUserRoutes {
   private logger: ILogger;
 
-  constructor(private userStore: IUserStore, private authStore: IAuthenticatedUserStore, private config : IConfig) {
+  constructor(private userStore: IUserStore, private authStore: IAuthenticatedUserStore, private config: IConfig) {
     this.logger = LogManager.getLogger(__filename);
+  }
+
+
+  create(req, res) {
+    this.logger.info(`${req.method} ${req.originalUrl}`);
+
+    const redirectUri = req.body.redirectUri;
+    const firstName = req.body.first_name;
+    const lastName = req.body.last_name;
+    const email = req.body.email;
+
+    const user = new SSOUser(email, firstName, lastName);
+    this.logger.debug(user);
+
+    this.userStore.add(user);
+
+    const userCode = getUserCode(req, res);
+    this.authStore.set(userCode, user);
+
+    res.redirect(redirectUri);
+
+  }
+
+  removeUser(req, res, emailUserId) {
+    this.userStore.find()
   }
 
   post(req, res) {
     this.logger.debug(req.body);
 
     const emailUserId = req.body.email_user_id;
+    const action = req.body.submit_button;
     const redirectUri = req.body.redirectUri;
     const userCode = getUserCode(req, res);
+
+    if (action == "remove-user") return this.removeUser(req, res, emailUserId);
 
     const user = this.userStore.find(emailUserId);
 
@@ -57,9 +86,11 @@ export class AuthorizeUserRoutes {
       users: sortedUsers,
       title: `mock-sso`,
       version: this.config.version,
-      repo: this.config.repoUrl,
+      repo: this.config.repoUrl
     };
 
     res.render("multiple", context);
   }
+
+
 }
