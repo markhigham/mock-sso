@@ -44,8 +44,14 @@ export class AuthorizeUserRoutes {
 
   }
 
-  removeUser(req, res, emailUserId) {
-    this.userStore.find()
+  removeUser(req, res, emailUserId, redirectUri) {
+    this.logger.debug("removeUser");
+    const user = this.userStore.remove(emailUserId);
+    if(user) {
+      res.status(200).send(`${user.email} was removed. You should go back to your app and re-authenticate`);
+    } else {
+      res.status(400);
+    }
   }
 
   post(req, res) {
@@ -56,7 +62,7 @@ export class AuthorizeUserRoutes {
     const redirectUri = req.body.redirectUri;
     const userCode = getUserCode(req, res);
 
-    if (action == "remove-user") return this.removeUser(req, res, emailUserId);
+    if (action == "remove-user") return this.removeUser(req, res, emailUserId, redirectUri);
 
     const user = this.userStore.find(emailUserId);
 

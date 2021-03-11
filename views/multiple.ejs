@@ -27,6 +27,12 @@
 <script>
   document.body.className = ((document.body.className) ? document.body.className + " js-enabled" : "js-enabled");
 
+  function remove(emailUserId, email) {
+    if (!confirm(`Delete ${email}`)) return;
+    const button = document.getElementById(`submit_button_${emailUserId}`);
+    button.click();
+  }
+
 </script>
 
 <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
@@ -58,33 +64,38 @@
 
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <dl class="govuk-summary-list">
-                    <% users.forEach(function(user) { %>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                <%= user.first_name; %> <%= user.last_name %>
-                            </dt>
+                <div style="max-height: 30rem;overflow-y:scroll;">
+                    <dl class="govuk-summary-list">
+                        <% users.forEach(function(user) { %>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    <%= user.first_name; %> <%= user.last_name %>
+                                </dt>
 
-                            <dd class="govuk-summary-list__value">
-                                <%= user.email %>
-                            </dd>
+                                <dd class="govuk-summary-list__value">
+                                    <%= user.email %>
+                                </dd>
 
-                            <dd class="govuk-summary-list__actions">
-                                <form method="POST" action="/select-user">
-                                    <input type="hidden" value="<%= redirectUri; %>" name="redirectUri" />
-                                    <input name="email_user_id" type="hidden" value="<%= user.email_user_id; %>" />
-                                    <button class="govuk-link__fake" type="submit"
-                                            name="submit_button">Select
-                                    </button>
-                                    <button class="govuk-link__fake" type="submit"
-                                            name="submit_button" value="remove-user">Remove
-                                    </button>
-                                </form>
-                            </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <form method="POST" action="/select-user">
+                                        <input type="hidden" value="<%= redirectUri; %>" name="redirectUri" />
+                                        <input name="email_user_id" type="hidden" value="<%= user.email_user_id; %>" />
+                                        <button class="govuk-link__fake" type="submit"
+                                                name="submit_button">Select
+                                        </button>
+                                        <a class="govuk-link__fake"
+                                           onclick="remove('<%= user.email_user_id %>', '<%= user.email %>')">Remove</a>
+                                        <button class="govuk-link__fake" type="submit" style="display:none;"
+                                                id="submit_button_<%= user.email_user_id %>"
+                                                name="submit_button" value="remove-user">Remove
+                                        </button>
+                                    </form>
+                                </dd>
 
-                        </div>
-                    <% }); %>
-                </dl>
+                            </div>
+                        <% }); %>
+                    </dl>
+                </div>
             </div>
         </div>
 

@@ -4,6 +4,8 @@ export interface IAuthenticatedUserStore {
   get(key: string);
 
   set(key: string, user: any);
+
+  dump(): any;
 }
 
 export interface IUserStore {
@@ -13,7 +15,9 @@ export interface IUserStore {
 
   find(emailUserId: string): any;
 
-  add(user: ISSOUser):void;
+  remove(emailUserId: string): ISSOUser;
+
+  add(user: ISSOUser): void;
 }
 
 export interface ISSOUser {

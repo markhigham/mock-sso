@@ -47,6 +47,14 @@ export class App {
     const userRoutes = new UserRoutes(this.authenticatedUserStore, this.config);
     this.app.get("/api/v1/user/me", userRoutes.user.bind(userRoutes));
     this.app.post("/o/introspect/", userRoutes.introspect.bind(userRoutes));
+
+    this.app.get("/debug/auth", (req, res) => {
+      res.json(this.authenticatedUserStore.dump());
+    });
+
+    this.app.get("/debug/users", (req, res) => {
+      res.json(this.userStore.getAll());
+    });
   }
 
   start(): Promise<any> {

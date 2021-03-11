@@ -20,4 +20,8 @@ export class InMemoryAuthenticatedUserStore implements IAuthenticatedUserStore {
     this.logger.debug(user);
     return user;
   }
+
+  dump(): any {
+    return this.store;
+  }
 }
