@@ -13,10 +13,13 @@ export interface IConfig {
 
 const weakId = "_" + new Date().getTime();
 export function getConfig() {
+  let numericPort: number = 3000;
+  if (process.env.PORT) numericPort = Number(process.env.PORT);
+
   return {
     logLevel: process.env.LOG_LEVEL || "debug",
     host: "0.0.0.0",
-    port: 5000,
+    port: numericPort,
     version: packageConfig.version,
     repoUrl: packageConfig.repository.url,
     scope: process.env.SCOPE || "read write",

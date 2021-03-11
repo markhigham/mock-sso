@@ -18,7 +18,8 @@
     "gulp": "gulp",
     "gulp:watch": "gulp && gulp sass:watch",
     "build": "tsc",
-    "build:watch": "tsc -w"
+    "build:watch": "tsc -w",
+    "postinstall": "gulp && tsc"
   },
   "engines": {
     "node": "12.20.x"
