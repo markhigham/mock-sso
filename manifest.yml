@@ -1,7 +1,7 @@
 ---
 applications:
-  - name: dso-mock-sso
-    command: PORT=3000 node dist/bin/mock-sso.js
+  - name: dso-mock-sso-dev
+    command: node dist/bin/mock-sso.js
     memory: 256M
     buildpacks:
       - nodejs_buildpack
