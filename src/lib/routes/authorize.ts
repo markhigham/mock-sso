@@ -99,6 +99,6 @@ export class AuthorizeUserRoutes {
       repo: this.config.repoUrl,
     };
 
-    res.render("multiple", context);
+    res.render("select-user", context);
   }
 }

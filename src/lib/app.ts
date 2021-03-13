@@ -57,7 +57,7 @@ export class App {
   start(): Promise<any> {
     const logger = this.logger;
     return new Promise((resolve, reject) => {
-      const httpServer = this.app.listen(this.config.port, (err) => {
+      const httpServer = this.app.listen(this.config.port, this.config.host, (err) => {
         if (err) {
           logger.error(err);
           reject(err);

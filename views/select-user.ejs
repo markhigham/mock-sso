@@ -70,7 +70,6 @@
         <% if (users.length){ %>
             <h1 class="govuk-heading-l">Login as an existing user</h1>
 
-
             <form id="loginForm" method="post" action="/select-user" style="display:none;">
                 <input type="text" value="<%= redirectUri; %>" name="redirectUri" />
                 <input type="text" name="email_user_id" id="emailUserId" />
@@ -111,6 +110,7 @@
                 </div>
             </div>
         <% } %>
+
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <h2 class="govuk-heading-l">Login as a new user</h2>
@@ -140,6 +140,21 @@
                         <input type="submit" class="govuk-button" value="Create and login" />
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full-width">
+                <h2 class="govuk-heading-l">Manage your users</h2>
+                
+                <p class="govuk-body">
+                    <a href="#" class="govuk-link">Download</a> your users as a json file for later uploading
+                </p>
+
+                <p class="govuk-body">
+                    <a href="#" class="govuk-link">Upload</a> your users as a json file for later uploading
+                </p>
+
             </div>
         </div>
 
