@@ -38,9 +38,20 @@
         </div>
       </div>
     </header>
+    <div class="govuk-width-container">
+      <div class="govuk-phase-banner">
+        <p class="govuk-phase-banner__content">
+          <strong class="govuk-tag govuk-phase-banner__content__tag"> dev </strong>
+          <span class="govuk-phase-banner__text">
+            This development only service. <a class="govuk-link" href="#">Read more</a> will help us to improve it.
+          </span>
+        </p>
+      </div>
+    </div>
 
-    {% block content %} {% endblock %}
-
+    <div class="govuk-width-container">
+      <main class="govuk-main-wrapper" id="main-content" role="main">{% block content %} {% endblock %}</main>
+    </div>
     <footer class="govuk-footer" role="contentinfo">
       <div class="govuk-width-container">
         <div class="govuk-footer__meta">
@@ -50,7 +61,6 @@
         </div>
       </div>
     </footer>
-
     <script src="/js/all.js"></script>
     <script>
       window.GOVUKFrontend.initAll();
