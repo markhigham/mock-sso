@@ -5,6 +5,7 @@ import { getUserCode } from "./utils";
 import { IConfig } from "../../config";
 import { SSOUser } from "../data/sso-user";
 import { IUserService } from "../data/user-service";
+import * as moment from "moment";
 
 const logger = LogManager.getLogger(__filename);
 
@@ -39,6 +40,41 @@ export class AuthorizeUserRoutes {
     this.authStore.set(userCode, user);
 
     res.redirect(redirectUri);
+  }
+
+  downloadUsers(req, res) {
+    const userCode = getUserCode(req, res);
+    const users = this.userService.dumpUsers(userCode);
+
+    const now = moment.utc();
+    const filename = `mock-sso-${now.format("YYYY-MM-DD-HHmm")}.json`;
+
+    res.setHeader("Content-type", "application/json");
+    res.setHeader("Content-disposition", `attachment; filename=${filename}`);
+
+    res.json(users);
+  }
+
+  uploadUsers(req, res) {
+    const redirectUri = req.body.redirectUri;
+    if (!req.file) res.status(400).send("expected a file to be uploaded");
+    try {
+      const contents = req.file.buffer.toString();
+      const users = JSON.parse(contents);
+      const userCode = getUserCode(req, res);
+
+      const sortedUsers = this.userService.uploadUsers(userCode, users);
+
+      res.render("select-user", {
+        redirectUri: req.body.redirectTo,
+        users: sortedUsers,
+        title: `mock-sso`,
+        version: this.config.version,
+        repo: this.config.repoUrl,
+      });
+    } catch (ex) {
+      res.status(400).send(ex);
+    }
   }
 
   removeUser(req, res, emailUserId, redirectUri) {

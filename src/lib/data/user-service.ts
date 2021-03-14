@@ -7,9 +7,12 @@ const INITIAL_USERS_LIST = "__shared";
 
 export interface IUserService {
   getAvailableUsers(userKey: string): ISSOUser[];
+  dumpUsers(userKey: string): ISSOUser[];
   add(userKey: string, user: ISSOUser): ISSOUser;
   remove(code: string, emailUserId: string): ISSOUser;
   find(userCode: string, emailUserId: string): ISSOUser;
+
+  uploadUsers(userCode: string, users: ISSOUser[]): void;
 }
 
 export class UserService implements IUserService {
@@ -23,9 +26,21 @@ export class UserService implements IUserService {
     this.allUsers[INITIAL_USERS_LIST] = initialUserList;
   }
 
+  dumpUsers(userKey: string): ISSOUser[] {
+    this.logger.debug(`dumpUsers for ${userKey}`);
+    return this.getUserList(userKey).getAll();
+  }
+
+  uploadUsers(userKey: string, users: ISSOUser[]): ISSOUser[] {
+    this.logger.debug(`uploadUsers for ${userKey}`);
+    const list = new InMemoryUserList(users);
+    this.allUsers[userKey] = list;
+    return list.getAll();
+  }
+
   getAvailableUsers(userKey: string): ISSOUser[] {
     this.logger.debug(`getAvailableUsers for ${userKey}`);
-    return this.getIndividualUsers(userKey).getAll();
+    return this.getUserList(userKey).getAll();
   }
 
   private addUser(user: ISSOUser, userList: IUserList): ISSOUser {
@@ -33,15 +48,15 @@ export class UserService implements IUserService {
   }
 
   add(userKey: string, user: ISSOUser): ISSOUser {
-    return this.getIndividualUsers(userKey).upsert(user);
+    return this.getUserList(userKey).upsert(user);
   }
 
   remove(code: string, emailUserId: string): ISSOUser {
     this.logger.debug(`remove ${emailUserId} from ${code}`);
-    return this.getIndividualUsers(code).remove(emailUserId);
+    return this.getUserList(code).remove(emailUserId);
   }
 
-  private getIndividualUsers(userCode: string): IUserList {
+  private getUserList(userCode: string): IUserList {
     const userList = this.allUsers[userCode];
     if (userList) return userList;
 
@@ -51,6 +66,6 @@ export class UserService implements IUserService {
   }
 
   find(userCode: string, emailUserId: string): ISSOUser {
-    return this.getIndividualUsers(userCode).find(emailUserId);
+    return this.getUserList(userCode).find(emailUserId);
   }
 }

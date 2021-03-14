@@ -1,10 +1,11 @@
-import { Url } from "url";
 import * as path from "path";
-import { ILogger, LogManager } from "./logger";
+import * as multer from "multer";
 import * as express from "express";
 import * as cookieParser from "cookie-parser";
-
+import * as nunjucks from "nunjucks";
 import * as stoppable from "stoppable";
+
+import { ILogger, LogManager } from "./logger";
 import { AuthorizeUserRoutes } from "./routes/authorize";
 import { IAuthenticatedUserStore } from "./data/interfaces";
 import { IConfig } from "../config";
@@ -14,20 +15,29 @@ import { IUserService } from "./data/user-service";
 
 export class App {
   private readonly logger: ILogger;
-  private app: any;
+  private readonly app: any;
   private server: any;
+  private upload: multer.Multer;
 
   constructor(private userService: IUserService, private authenticatedUserStore: IAuthenticatedUserStore, private config: IConfig) {
     this.logger = LogManager.getLogger(__filename);
 
     this.app = express();
-
+    const storage = multer.memoryStorage();
+    this.upload = multer({ storage: storage });
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
 
     this.app.use(cookieParser(config.secret));
 
-    this.app.set("view engine", "ejs");
+    this.app.engine("html", nunjucks.render);
+    this.app.set("view engine", "html");
+
+    nunjucks.configure("views", {
+      autoescape: true,
+      express: this.app,
+    });
+
     const staticDir = path.join(__dirname + "/../../public");
     this.logger.debug(`staticDir is ${staticDir}`);
     this.app.use(express.static(staticDir));
@@ -42,6 +52,9 @@ export class App {
     this.app.post("/select-user", authRoutes.post.bind(authRoutes));
     this.app.post("/create-user", authRoutes.create.bind(authRoutes));
 
+    this.app.get("/download", authRoutes.downloadUsers.bind(authRoutes));
+    this.app.post("/upload", this.upload.single("users"), authRoutes.uploadUsers.bind(authRoutes));
+
     const tokenRoutes = new TokenRoutes();
     this.app.post("/o/token", tokenRoutes.post.bind(tokenRoutes));
 
@@ -49,8 +62,12 @@ export class App {
     this.app.get("/api/v1/user/me", userRoutes.user.bind(userRoutes));
     this.app.post("/o/introspect/", userRoutes.introspect.bind(userRoutes));
 
-    this.app.get("/debug/auth", (req, res) => {
-      res.json(this.authenticatedUserStore.dump());
+    this.app.get("/", (req, res) => {
+      res.render("index", {
+        title: `mock-sso`,
+        version: this.config.version,
+        repo: this.config.repoUrl,
+      });
     });
   }
 

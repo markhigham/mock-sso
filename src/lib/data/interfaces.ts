@@ -4,25 +4,8 @@
  */
 export interface IAuthenticatedUserStore {
   get(key: string);
-
   set(key: string, user: any);
-
-  dump(): any;
 }
-
-// export interface IUserStore {
-//   load(users: ISSOUser[]);
-//
-//   getAll(userKey: string): ISSOUser[];
-//
-//   count(userKey: string): number;
-//
-//   find(userKey: string, emailUserId: string): any;
-//
-//   remove(userKey: string, emailUserId: string): ISSOUser;
-//
-//   add(user: ISSOUser): void;
-// }
 
 export interface ISSOUser {
   email: string;
