@@ -10,6 +10,6 @@ typings
 /.idea/workspace.xml
 .tmp
 .idea
-/datapublic/assets
+/public/assets
 public/css
 public/js
