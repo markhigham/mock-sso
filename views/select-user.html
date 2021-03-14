@@ -1,29 +1,5 @@
 {% extends "base.html" %}
-{% block header_scripts %}
-<script>
-  document.body.className = document.body.className ? document.body.className + " js-enabled" : "js-enabled";
 
-  function remove(emailUserId, email) {
-    if (!confirm(`Delete ${email}`)) return;
-    setFormEmailUserId(emailUserId);
-    const button = document.getElementById("removeButton");
-    button.click();
-  }
-
-  function setFormEmailUserId(emailUserId) {
-    const form = document.getElementById("loginForm");
-    const emailInput = document.getElementById("emailUserId");
-    emailInput.value = emailUserId;
-    return form;
-  }
-
-  function login(emailUserId) {
-    const form = setFormEmailUserId(emailUserId);
-    form.submit();
-  }
-
-</script>
-{% endblock %}
 {% block content %}
 
     {% if users.length %}
@@ -102,14 +78,53 @@
         </p>
 
         <p class="govuk-body">
-          <a class="govuk-link govuk-link__fake">Upload</a> your users from a JSON file.
-          <form method="post" action="/upload" enctype="multipart/form-data">
-          <input type="file" accept="application/json,*.json" name="users" />
+          <a class="govuk-link govuk-link__fake" onclick="showFileUploadPrompt()">Upload</a> your users from a JSON file.
+          <form method="post" action="/upload" enctype="multipart/form-data" id="uploadForm">
+          <input type="file" accept="application/json,*.json" name="users" id="fileUploadInput" onchange="uploadFile(this)" />
           <input type="text" value="{{ redirectUri }}" name="redirectUri" />
-        <input type="submit"/>
+          <input type="submit"/>
           </form>
         </p>
       </div>
     </div>
 
+{% endblock %}
+
+{% block header_scripts %}
+<script>
+ 
+
+  function showFileUploadPrompt(){
+    const fileInput = document.getElementById("fileUploadInput");
+    fileInput.click();
+  }
+
+  function uploadFile(fileInput){
+    if(!fileInput.files)return;
+
+    const uploadForm = document.getElementById("uploadForm");
+    uploadForm.submit();
+    
+  }
+
+  function remove(emailUserId, email) {
+    if (!confirm(`Delete ${email}`)) return;
+    setFormEmailUserId(emailUserId);
+    const button = document.getElementById("removeButton");
+    button.click();
+  }
+
+  function setFormEmailUserId(emailUserId) {
+    const form = document.getElementById("loginForm");
+    const emailInput = document.getElementById("emailUserId");
+    emailInput.value = emailUserId;
+    return form;
+  }
+
+  function login(emailUserId) {
+    const form = setFormEmailUserId(emailUserId);
+    form.submit();
+  }
+
+</script>
 {% endblock %}

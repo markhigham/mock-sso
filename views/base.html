@@ -25,6 +25,9 @@
   </head>
 
   <body class="govuk-template__body">
+    <script>
+      document.body.className = document.body.className ? document.body.className + " js-enabled" : "js-enabled";
+    </script>
     <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
 
     <header class="govuk-header" role="banner" data-module="govuk-header">
@@ -43,7 +46,7 @@
         <p class="govuk-phase-banner__content">
           <strong class="govuk-tag govuk-phase-banner__content__tag"> dev </strong>
           <span class="govuk-phase-banner__text">
-            This development only service. <a class="govuk-link" href="#">Read more</a> will help us to improve it.
+            This development only service. <a class="govuk-link" href="#">Read more</a> and never use in production.
           </span>
         </p>
       </div>
