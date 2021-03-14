@@ -30,11 +30,11 @@ export class App {
 
     this.app.use(cookieParser(config.secret));
 
-    this.app.engine("html", nunjucks.render);
-    this.app.set("view engine", "html");
+    this.app.engine("njk", nunjucks.render);
+    this.app.set("view engine", "njk");
 
     nunjucks.configure("views", {
-      autoescape: true,
+      autoescape: false,
       express: this.app,
     });
 

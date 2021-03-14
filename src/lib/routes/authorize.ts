@@ -1,6 +1,6 @@
 import * as url from "url";
 import { ILogger, LogManager } from "../logger";
-import { IAuthenticatedUserStore } from "../data/interfaces";
+import { IAuthenticatedUserStore, ISSOUser } from "../data/interfaces";
 import { getUserCode } from "./utils";
 import { IConfig } from "../../config";
 import { SSOUser } from "../data/sso-user";
@@ -28,6 +28,7 @@ export class AuthorizeUserRoutes {
     this.logger.info(`${req.method} ${req.originalUrl}`);
 
     const redirectUri = req.body.redirectUri;
+    const clientId = req.body.clientId;
     const firstName = req.body.first_name;
     const lastName = req.body.last_name;
     const email = req.body.email;
@@ -35,7 +36,7 @@ export class AuthorizeUserRoutes {
     const user = new SSOUser(email, firstName, lastName);
     this.logger.debug(user);
 
-    const userCode = getUserCode(req, res);
+    const userCode = getUserCode(req, res, clientId);
     this.userService.add(userCode, user);
     this.authStore.set(userCode, user);
 
@@ -43,7 +44,8 @@ export class AuthorizeUserRoutes {
   }
 
   downloadUsers(req, res) {
-    const userCode = getUserCode(req, res);
+    const clientId = req.query["clientId"];
+    const userCode = getUserCode(req, res, clientId);
     const users = this.userService.dumpUsers(userCode);
 
     const now = moment.utc();
@@ -59,44 +61,51 @@ export class AuthorizeUserRoutes {
     const redirectUri = req.body.redirectUri;
     if (!req.file) res.status(400).send("expected a file to be uploaded");
     try {
+      const clientId = req.body["clientId"];
+      const userCode = getUserCode(req, res, clientId);
+
       const contents = req.file.buffer.toString();
       const users = JSON.parse(contents);
-      const userCode = getUserCode(req, res);
 
-      const sortedUsers = this.userService.uploadUsers(userCode, users);
+      if (!Array.isArray(users)) throw "The upload file should contain an array of user objects";
 
-      res.render("select-user", {
-        redirectUri: req.body.redirectTo,
-        users: sortedUsers,
-        title: `mock-sso`,
-        version: this.config.version,
-        repo: this.config.repoUrl,
-      });
+      const uploadedUsers = this.userService.uploadUsers(userCode, users);
+      this.renderAuthPage(res, uploadedUsers, redirectUri, clientId);
     } catch (ex) {
-      res.status(400).send(ex);
+      this.logger.error(ex);
+      this.renderError(res, ex);
     }
   }
 
-  removeUser(req, res, emailUserId, redirectUri) {
+  renderError(res, message: string) {
+    this.logger.error(message);
+    res.render("error", {
+      message: message,
+      title: `mock-sso`,
+      version: this.config.version,
+      repo: this.config.repoUrl,
+    });
+  }
+
+  removeUser(req, res, emailUserId: string, redirectUri: string, clientId: string) {
     this.logger.debug("removeUser");
-    const code = getUserCode(req, res);
-    const user = this.userService.remove(code, emailUserId);
-    if (user) {
-      res.status(200).send(`${user.email} was removed. You should go back to your app and re-authenticate`);
-    } else {
-      res.status(400).send(`${emailUserId} was not found`);
-    }
+    const code = getUserCode(req, res, clientId);
+    const remainingUsers = this.userService.remove(code, emailUserId);
+
+    this.renderAuthPage(res, remainingUsers, redirectUri, clientId);
   }
 
   post(req, res) {
     this.logger.debug(req.body);
 
     const emailUserId = req.body.email_user_id;
+    const clientId = req.body.clientId;
+
     const action = req.body.submit_button;
     const redirectUri = req.body.redirectUri;
-    const userCode = getUserCode(req, res);
+    const userCode = getUserCode(req, res, clientId);
 
-    if (action == "remove-user") return this.removeUser(req, res, emailUserId, redirectUri);
+    if (action == "remove-user") return this.removeUser(req, res, emailUserId, redirectUri, clientId);
 
     const user = this.userService.find(userCode, emailUserId);
 
@@ -115,24 +124,24 @@ export class AuthorizeUserRoutes {
 
   get(req, res) {
     this.logger.info("authorize for multiple users");
-    const code = getUserCode(req, res);
+
+    const clientId = req.query["client_id"];
+    const code = getUserCode(req, res, clientId);
+
     const redirectTo = makeRedirectUrl(req.query["redirect_uri"], req.query["state"], code);
 
-    let sortedUsers = [];
-
     const availableUsers = this.userService.getAvailableUsers(code);
-    if (availableUsers && availableUsers.length) {
-      sortedUsers = availableUsers.sort((a, b) => {
-        return a.email.localeCompare(b.email);
-      });
-    }
+    this.renderAuthPage(res, availableUsers, redirectTo, clientId);
+  }
 
+  private renderAuthPage(res, users: ISSOUser[], redirectUri: string, oauthClientId?: string) {
     const context = {
-      redirectUri: redirectTo,
-      users: sortedUsers,
+      redirectUri: redirectUri,
+      users: users,
       title: `mock-sso`,
       version: this.config.version,
       repo: this.config.repoUrl,
+      clientId: oauthClientId,
     };
 
     res.render("select-user", context);

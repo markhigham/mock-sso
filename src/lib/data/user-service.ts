@@ -9,10 +9,10 @@ export interface IUserService {
   getAvailableUsers(userKey: string): ISSOUser[];
   dumpUsers(userKey: string): ISSOUser[];
   add(userKey: string, user: ISSOUser): ISSOUser;
-  remove(code: string, emailUserId: string): ISSOUser;
+  remove(code: string, emailUserId: string): ISSOUser[];
   find(userCode: string, emailUserId: string): ISSOUser;
 
-  uploadUsers(userCode: string, users: ISSOUser[]): void;
+  uploadUsers(userCode: string, users: ISSOUser[]): ISSOUser[];
 }
 
 export class UserService implements IUserService {
@@ -51,7 +51,7 @@ export class UserService implements IUserService {
     return this.getUserList(userKey).upsert(user);
   }
 
-  remove(code: string, emailUserId: string): ISSOUser {
+  remove(code: string, emailUserId: string): ISSOUser[] {
     this.logger.debug(`remove ${emailUserId} from ${code}`);
     return this.getUserList(code).remove(emailUserId);
   }

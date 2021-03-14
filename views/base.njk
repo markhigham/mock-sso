@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">
-  <head>
+<head>
     <meta charset="utf-8" />
     <title>mock-sso - don't use in prod</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -22,51 +22,54 @@
     <meta property="og:image" content="/assets/images/govuk-opengraph-image.png" />
 
     {% block header_scripts %} {% endblock %}
-  </head>
+</head>
 
-  <body class="govuk-template__body">
-    <script>
-      document.body.className = document.body.className ? document.body.className + " js-enabled" : "js-enabled";
-    </script>
-    <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+<body class="govuk-template__body">
+<script>
+  document.body.className = document.body.className ? document.body.className + " js-enabled" : "js-enabled";
+</script>
+<a href="#main-content" class="govuk-skip-link">Skip to main content</a>
 
-    <header class="govuk-header" role="banner" data-module="govuk-header">
-      <div class="govuk-header__container govuk-width-container">
+<header class="govuk-header" role="banner" data-module="govuk-header">
+    <div class="govuk-header__container govuk-width-container">
         <div class="govuk-header__logo">
-          <a href="/" class="govuk-header__link govuk-header__link--homepage">
+            <a href="/" class="govuk-header__link govuk-header__link--homepage">
             <span class="govuk-header__logotype">
-              <span class="govuk-header__logotype-text"> mock-sso </span>
+              <span class="govuk-header__logotype-text">mock-sso </span>
             </span>
-          </a>
+            </a>
         </div>
-      </div>
-    </header>
-    <div class="govuk-width-container">
-      <div class="govuk-phase-banner">
+    </div>
+</header>
+<div class="govuk-width-container">
+    <div class="govuk-phase-banner">
         <p class="govuk-phase-banner__content">
-          <strong class="govuk-tag govuk-phase-banner__content__tag"> dev </strong>
-          <span class="govuk-phase-banner__text">
+            <strong class="govuk-tag govuk-phase-banner__content__tag"> dev </strong>
+
+            <span class="govuk-phase-banner__text">
             This development only service. <a class="govuk-link" href="#">Read more</a> and never use in production.
           </span>
+
         </p>
-      </div>
     </div>
 
+</div>
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">{% block content %} {% endblock %}</main>
+</div>
+<footer class="govuk-footer" role="contentinfo">
     <div class="govuk-width-container">
-      <main class="govuk-main-wrapper" id="main-content" role="main">{% block content %} {% endblock %}</main>
-    </div>
-    <footer class="govuk-footer" role="contentinfo">
-      <div class="govuk-width-container">
         <div class="govuk-footer__meta">
-          <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
-            <span class="govuk-footer__licence-description"> {{ title }} {{ version }} - {{ repo }} </span>
-          </div>
+            <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+                <span class="govuk-footer__licence-description"> {{ title }} {{ version }} - {{ repo }} </span>
+            </div>
         </div>
-      </div>
-    </footer>
-    <script src="/js/all.js"></script>
-    <script>
-      window.GOVUKFrontend.initAll();
-    </script>
-  </body>
+    </div>
+</footer>
+<script src="/js/all.js"></script>
+<script>
+  window.GOVUKFrontend.initAll();
+</script>
+</body>
 </html>

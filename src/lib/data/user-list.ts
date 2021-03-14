@@ -3,10 +3,13 @@ import { ILogger, LogManager } from "../logger";
 
 export interface IUserList {
   clear(): void;
+
   getAll(): ISSOUser[];
 
   upsert(user: ISSOUser): ISSOUser;
-  remove(emailUserId: string): ISSOUser;
+
+  remove(emailUserId: string): ISSOUser[];
+
   find(emailUserId: string): ISSOUser;
 }
 
@@ -31,10 +34,10 @@ export class InMemoryUserList implements IUserList {
   }
 
   getAll(): ISSOUser[] {
-    return this.users;
+    return this.users.sort((a, b) => a.email.localeCompare(b.email));
   }
 
-  remove(emailUserId: string): ISSOUser {
+  remove(emailUserId: string): ISSOUser[] {
     this.logger.debug(`remove ${emailUserId}`);
     this.logger.debug(this.users);
     const index = this.users.findIndex((u) => u.email_user_id == emailUserId);
@@ -46,9 +49,9 @@ export class InMemoryUserList implements IUserList {
       this.users.splice(index, 1);
     }
 
-    this.logger.debug(user);
+    // this.logger.debug(user);
 
-    return user;
+    return this.getAll();
   }
 
   upsert(user: ISSOUser): ISSOUser {
