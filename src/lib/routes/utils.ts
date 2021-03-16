@@ -1,11 +1,5 @@
 import * as uuid from "uuid";
 
-/**
- *
- * @param req
- * @param res
- * @param clientId - when this is set it will create login on a per application basis
- */
 export function getUserCode(req, res, clientId: string) {
   const cookieName = `mock-sso-cookie${clientId}`;
   if (req.cookies && req.cookies[cookieName]) return req.cookies[cookieName];
