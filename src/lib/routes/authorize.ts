@@ -62,10 +62,13 @@ export class AuthorizeUserRoutes {
     if (!req.file) res.status(400).send("expected a file to be uploaded");
     try {
       const clientId = req.body["clientId"];
+      logger.debug(clientId);
       const userCode = getUserCode(req, res, clientId);
 
       const contents = req.file.buffer.toString();
       const users = JSON.parse(contents);
+
+      logger.debug(users);
 
       if (!Array.isArray(users)) throw "The upload file should contain an array of user objects";
 

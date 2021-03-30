@@ -18,8 +18,9 @@ export class InMemoryUserList implements IUserList {
   private readonly logger: ILogger;
 
   constructor(initialUsers: ISSOUser[]) {
-    this.users.push(...initialUsers);
     this.logger = LogManager.getLogger(__filename);
+    this.users = initialUsers;
+    this.logger.debug(`there are ${initialUsers.length} users`);
   }
 
   clear(): void {

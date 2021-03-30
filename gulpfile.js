@@ -27,9 +27,7 @@ gulp.task("clean", function () {
 });
 
 gulp.task("copy-govuk-assets", function () {
-  return gulp
-    .src([`${GOVUK_ASSETS_PATH}/**/*`], { base: GOVUK_ASSETS_PATH })
-    .pipe(gulp.dest(ASSETS_DEST));
+  return gulp.src([`${GOVUK_ASSETS_PATH}/**/*`], { base: GOVUK_ASSETS_PATH }).pipe(gulp.dest(ASSETS_DEST));
 });
 
 gulp.task("copy-govuk-js", function () {
@@ -37,12 +35,7 @@ gulp.task("copy-govuk-js", function () {
 });
 
 gulp.task("sass:compile", function () {
-  return gulp
-    .src(SASS_FILES)
-    .pipe(sourcemaps.init())
-    .pipe(sass(sassOptions))
-    .pipe(sourcemaps.write("./maps"))
-    .pipe(gulp.dest(CSS_DIR));
+  return gulp.src(SASS_FILES).pipe(sourcemaps.init()).pipe(sass(sassOptions)).pipe(sourcemaps.write("./maps")).pipe(gulp.dest(CSS_DIR));
 });
 
 gulp.task("sass:watch", function () {
@@ -51,7 +44,4 @@ gulp.task("sass:watch", function () {
 
 gulp.task("sass", gulp.series("clean", "sass:compile"));
 
-gulp.task(
-  "default",
-  gulp.series(["sass", "copy-govuk-assets", "copy-govuk-js"])
-);
+gulp.task("default", gulp.series(["sass", "copy-govuk-assets", "copy-govuk-js"]));
