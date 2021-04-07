@@ -13,6 +13,7 @@ export interface IUserService {
   find(userCode: string, emailUserId: string): ISSOUser;
 
   uploadUsers(userCode: string, users: ISSOUser[]): ISSOUser[];
+  dumpAll();
 }
 
 export class UserService implements IUserService {
@@ -29,6 +30,10 @@ export class UserService implements IUserService {
   dumpUsers(userKey: string): ISSOUser[] {
     this.logger.debug(`dumpUsers for ${userKey}`);
     return this.getUserList(userKey).getAll();
+  }
+
+  dumpAll(): any {
+    return this.allUsers;
   }
 
   uploadUsers(userKey: string, users: ISSOUser[]): ISSOUser[] {
@@ -58,9 +63,13 @@ export class UserService implements IUserService {
 
   private getUserList(userCode: string): IUserList {
     const userList = this.allUsers[userCode];
-    if (userList) return userList;
+    if (userList) {
+      this.logger.debug(`found userlist for ${userCode}`);
+      return userList;
+    }
+    this.logger.debug(`creating new userlist for ${userCode}`);
 
-    const newList = new InMemoryUserList(this.initialUserList.getAll());
+    const newList = new InMemoryUserList(this.initialUserList.clone());
     this.allUsers[userCode] = newList;
     return newList;
   }

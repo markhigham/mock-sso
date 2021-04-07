@@ -1,5 +1,4 @@
 import { ILogger, LogManager } from "../logger";
-import { IAuthenticatedUserStore } from "../data/interfaces";
 
 export class TokenRoutes {
   private logger: ILogger;

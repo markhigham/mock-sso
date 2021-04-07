@@ -5,6 +5,7 @@ export interface IUserList {
   clear(): void;
 
   getAll(): ISSOUser[];
+  clone(): ISSOUser[];
 
   upsert(user: ISSOUser): ISSOUser;
 
@@ -32,6 +33,12 @@ export class InMemoryUserList implements IUserList {
     return this.users.find((u) => {
       return u.email_user_id == emailUserId;
     });
+  }
+
+  clone(): ISSOUser[] {
+    const result = [];
+    result.push(...this.users);
+    return result;
   }
 
   getAll(): ISSOUser[] {

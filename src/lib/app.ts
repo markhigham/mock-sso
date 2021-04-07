@@ -12,6 +12,7 @@ import { IConfig } from "../config";
 import { TokenRoutes } from "./routes/token";
 import { UserRoutes } from "./routes/user";
 import { IUserService } from "./data/user-service";
+import { DebugRoutes } from "./routes/debug";
 
 export class App {
   private readonly logger: ILogger;
@@ -61,6 +62,9 @@ export class App {
     const userRoutes = new UserRoutes(this.authenticatedUserStore, this.config);
     this.app.get("/api/v1/user/me", userRoutes.user.bind(userRoutes));
     this.app.post("/o/introspect/", userRoutes.introspect.bind(userRoutes));
+
+    const debugRoutes = new DebugRoutes(this.userService);
+    this.app.get("/debug/dump", debugRoutes.dump.bind(debugRoutes));
 
     this.app.get("/", (req, res) => {
       res.render("index", {
