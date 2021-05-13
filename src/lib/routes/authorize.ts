@@ -44,12 +44,21 @@ export class AuthorizeUserRoutes {
   }
 
   downloadUsers(req, res) {
-    const clientId = req.query["clientId"];
+    this.logger.debug("downloadUsers");
+    const clientId = req.query["client_id"];
     const userCode = getUserCode(req, res, clientId);
+
+    this.logger.debug(`clientId: ${clientId}`);
+    this.logger.debug(`userCode: ${userCode}`);
+
     const users = this.userService.dumpUsers(userCode);
+
+    this.logger.debug(users);
 
     const now = moment.utc();
     const filename = `mock-sso-${now.format("YYYY-MM-DD-HHmm")}.json`;
+
+    this.logger.debug(`filename: ${filename}`)
 
     res.setHeader("Content-type", "application/json");
     res.setHeader("Content-disposition", `attachment; filename=${filename}`);
@@ -85,8 +94,6 @@ export class AuthorizeUserRoutes {
     res.render("error", {
       message: message,
       title: `mock-sso`,
-      version: this.config.version,
-      repo: this.config.repoUrl,
     });
   }
 
@@ -150,9 +157,7 @@ export class AuthorizeUserRoutes {
     const context = {
       redirectUri: redirectUri,
       users: users,
-      title: `mock-sso`,
-      version: this.config.version,
-      repo: this.config.repoUrl,
+
       clientId: oauthClientId,
       state: state,
     };

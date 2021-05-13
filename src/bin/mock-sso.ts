@@ -50,7 +50,7 @@ config.host = argv.h || config.host;
 const appName = path.basename(__filename).split(".")[0];
 
 function showHelp() {
-  const pkg = require("../package.json");
+  const pkg = require("../../package.json");
   const version = pkg.version;
 
   console.log(`${appName} [options] [saved_config_file]

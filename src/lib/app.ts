@@ -43,6 +43,14 @@ export class App {
     this.logger.debug(`staticDir is ${staticDir}`);
     this.app.use(express.static(staticDir));
 
+    this.app.use((req, res, next) => {
+      res.locals.version = this.config.version;
+      res.locals.repo = this.config.repoUrl;
+      res.locals.title = config.appName;
+      res.locals.storage =  `${authenticatedUserStore.constructor.name} / ${userService.constructor.name}`;
+      next();
+    });
+
     this.setupRoutes();
   }
 
@@ -69,8 +77,6 @@ export class App {
     this.app.get("/", (req, res) => {
       res.render("index", {
         title: `mock-sso`,
-        version: this.config.version,
-        repo: this.config.repoUrl,
       });
     });
   }

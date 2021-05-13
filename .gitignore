@@ -14,3 +14,4 @@ typings
 public/css
 public/js
 mock-users.json
+.env
