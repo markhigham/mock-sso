@@ -18,8 +18,7 @@
     "gulp": "gulp",
     "gulp:watch": "gulp && gulp sass:watch",
     "build": "tsc",
-    "build:watch": "tsc -w",
-    "postinstall": "gulp && tsc"
+    "build:watch": "tsc -w"
   },
   "engines": {
     "node": "12.20.x"
@@ -28,35 +27,35 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/cookie-parser": "^1.4.2",
-    "@types/node": "^14.14.33",
-    "@types/uuid": "^8.3.0",
     "body-parser": "^1.19.0",
     "colors": "^1.4.0",
     "cookie-parser": "^1.4.5",
     "del": "^6.0.0",
     "express": "^4.17.1",
-    "govuk-frontend": "^3.11.0",
-    "gulp": "^4.0.2",
-    "gulp-sass": "^4.1.0",
-    "gulp-sourcemaps": "^3.0.0",
     "minimist": "^1.2.5",
     "moment": "^2.29.1",
     "multer": "^1.4.2",
-    "node-sass": "^5.0.0",
     "nunjucks": "^3.2.3",
     "source-map-support": "^0.5.19",
     "stoppable": "^1.1.0",
-    "typescript": "^4.2.3",
     "uuid": "^8.3.2",
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
+    "@types/node": "^15.0.3",
+    "@types/uuid": "^8.3.0",
     "@types/multer": "^1.4.5",
-    "husky": "^4.3.8",
+    "typescript": "^4.2.4",
+    "husky": "^6.0.0",
     "nodemon": "^2.0.7",
-    "prettier": "^2.2.1",
-    "pretty-quick": "^3.1.0"
+    "node-sass": "^6.0.0",
+    "prettier": "^2.3.0",
+    "pretty-quick": "^3.1.0",
+    "govuk-frontend": "^3.11.0",
+    "gulp": "^4.0.2",
+    "gulp-sass": "^4.1.0",
+    "gulp-sourcemaps": "^3.0.0"
   },
   "husky": {
     "hooks": {
