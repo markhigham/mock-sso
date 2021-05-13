@@ -10,6 +10,8 @@ export class SSOUser implements ISSOUser {
   readonly last_name: string;
   readonly user_id: string;
 
+  readonly related_emails: string[];
+
   constructor(email: string, firstName: string, lastName: string, emailUserId?: string) {
     const weakId = "_" + new Date().getTime();
 
@@ -20,6 +22,7 @@ export class SSOUser implements ISSOUser {
 
     this.first_name = firstName;
     this.last_name = lastName;
+    this.related_emails = [];
 
     this.user_id = uuid.v4();
   }

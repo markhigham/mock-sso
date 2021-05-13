@@ -131,13 +131,22 @@ export class AuthorizeUserRoutes {
     const clientId = req.query["client_id"];
     const code = getUserCode(req, res, clientId);
 
-    const redirectTo = makeRedirectUrl(req.query["redirect_uri"], req.query["state"], code);
+    const redirectUri = req.query["redirect_uri"];
+    const state = req.query["state"];
+
+    logger.debug(`client_id: ${clientId}`);
+    logger.debug(`redirect_uri: ${redirectUri}`);
+    logger.debug(`state: ${state}`);
+
+    const redirectTo = makeRedirectUrl(redirectUri, state, code);
+
+    logger.debug(`redirect url: ${redirectTo}`);
 
     const availableUsers = this.userService.getAvailableUsers(code);
-    this.renderAuthPage(res, availableUsers, redirectTo, clientId);
+    this.renderAuthPage(res, availableUsers, redirectTo, clientId, state);
   }
 
-  private renderAuthPage(res, users: ISSOUser[], redirectUri: string, oauthClientId?: string) {
+  private renderAuthPage(res, users: ISSOUser[], redirectUri: string, oauthClientId?: string, state?: string) {
     const context = {
       redirectUri: redirectUri,
       users: users,
@@ -145,6 +154,7 @@ export class AuthorizeUserRoutes {
       version: this.config.version,
       repo: this.config.repoUrl,
       clientId: oauthClientId,
+      state: state,
     };
 
     res.render("select-user", context);

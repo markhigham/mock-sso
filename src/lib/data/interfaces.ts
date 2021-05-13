@@ -14,7 +14,7 @@ export interface ISSOUser {
   user_id: string;
   first_name: string;
   last_name: string;
-  related_emails?: [];
+  related_emails: string[];
   groups?: [];
   permitted_applications?: [];
   access_profiles?: [];
