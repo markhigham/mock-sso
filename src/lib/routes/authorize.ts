@@ -58,12 +58,26 @@ export class AuthorizeUserRoutes {
     const now = moment.utc();
     const filename = `mock-sso-${now.format("YYYY-MM-DD-HHmm")}.json`;
 
-    this.logger.debug(`filename: ${filename}`)
+    this.logger.debug(`filename: ${filename}`);
 
     res.setHeader("Content-type", "application/json");
     res.setHeader("Content-disposition", `attachment; filename=${filename}`);
 
     res.json(users);
+  }
+
+  restoreUsers(req, res) {
+    const clientId = req.body.clientId;
+    const redirectUri = req.body.redirectUri;
+    const usersJson = req.body.usersJson;
+
+    try {
+      const users = JSON.parse(usersJson);
+      this.renderAuthPage(res, users, redirectUri, clientId);
+    } catch (ex) {
+      this.logger.error(ex);
+      this.renderError(res, ex);
+    }
   }
 
   uploadUsers(req, res) {
@@ -74,6 +88,7 @@ export class AuthorizeUserRoutes {
       logger.debug(clientId);
       const userCode = getUserCode(req, res, clientId);
 
+      // submission via
       const contents = req.file.buffer.toString();
       const users = JSON.parse(contents);
 

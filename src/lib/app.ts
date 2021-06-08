@@ -47,7 +47,7 @@ export class App {
       res.locals.version = this.config.version;
       res.locals.repo = this.config.repoUrl;
       res.locals.title = config.appName;
-      res.locals.storage =  `${authenticatedUserStore.constructor.name} / ${userService.constructor.name}`;
+      res.locals.storage = `${authenticatedUserStore.constructor.name} / ${userService.constructor.name}`;
       next();
     });
 
@@ -63,6 +63,7 @@ export class App {
 
     this.app.get("/download", authRoutes.downloadUsers.bind(authRoutes));
     this.app.post("/upload", this.upload.single("users"), authRoutes.uploadUsers.bind(authRoutes));
+    this.app.post("/restore", authRoutes.restoreUsers.bind(authRoutes));
 
     const tokenRoutes = new TokenRoutes();
     this.app.post("/o/token", tokenRoutes.post.bind(tokenRoutes));

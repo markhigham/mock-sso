@@ -3,9 +3,9 @@
 {% block content %}
 
     <form id="loginForm" method="post" action="/select-user" style="display:none;">
-        <input type="text" value="{{ clientId }}" name="clientId"/>
-        <input type="text" value="{{ redirectUri }}" name="redirectUri"/>
-        <input type="text" name="email_user_id" id="emailUserId"/>
+        <input type="text" value="{{ clientId }}" name="clientId" />
+        <input type="text" value="{{ redirectUri }}" name="redirectUri" />
+        <input type="text" name="email_user_id" id="emailUserId" />
         <button type="submit" name="submit_button" value="remove-user" id="removeButton">Remove</button>
     </form>
 
@@ -44,24 +44,24 @@
                     <div class="govuk-grid-column-one-half">
                         <div class="govuk-form-group">
                             <label class="govuk-label" for="first_name">First name</label>
-                            <input type="text" class="govuk-input" id="first_name" name="first_name" required/>
+                            <input type="text" class="govuk-input" id="first_name" name="first_name" required />
                         </div>
                     </div>
                     <div class="govuk-grid-column-one-half">
                         <div class="govuk-form-group">
                             <label class="govuk-label" for="last_name">Last name</label>
-                            <input type="text" class="govuk-input" id="last_name" name="last_name" required/>
+                            <input type="text" class="govuk-input" id="last_name" name="last_name" required />
                         </div>
                     </div>
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="email">Email</label>
-                    <input type="email" class="govuk-input govuk-input--width-20" id="email" name="email" required/>
+                    <input type="email" class="govuk-input govuk-input--width-20" id="email" name="email" required />
                 </div>
                 <div class="govuk-form-group">
-                    <input type="hidden" value="{{ clientId }}" name="clientId"/>
-                    <input type="hidden" value="{{ redirectUri }}" name="redirectUri"/>
-                    <input type="submit" class="govuk-button" value="Create and login"/>
+                    <input type="hidden" value="{{ clientId }}" name="clientId" />
+                    <input type="hidden" value="{{ redirectUri }}" name="redirectUri" />
+                    <input type="submit" class="govuk-button" value="Create and login" />
                 </div>
             </form>
         </div>
@@ -69,21 +69,44 @@
             <h2 class="govuk-heading-s">Manage your users</h2>
 
             <p class="govuk-body-s">
-                <a href="/download?client_id={{ clientId }}" class="govuk-link govuk-link--no-visited-state">Download</a> your users as a JSON
+                <a href="/download?client_id={{ clientId }}"
+                   class="govuk-link govuk-link--no-visited-state">Download</a> your users as a JSON
                 file for
                 later uploading.
             </p>
 
             <p class="govuk-body-s">
-                <a class="govuk-link govuk-link--no-visited-state" href="#" onclick="showFileUploadPrompt()">Upload</a> your users from a
+                <a class="govuk-link govuk-link--no-visited-state" href="#" onclick="showFileUploadPrompt()">Upload</a>
+                your users from a
                 JSON file.
-            <form method="post" action="/upload" enctype="multipart/form-data" id="uploadForm" style="visibility: hidden;">
-                    <input type="text" name="clientId" value="{{ clientId }}"/>
-                    <input type="file" accept="application/json,*.json" name="users" id="fileUploadInput"
-                       onchange="uploadFile(this)"/>
-                    <input type="text" value="{{ redirectUri }}" name="redirectUri"/>
-                    <input type="submit"/>
-                </form>
+            <form method="post" action="/upload" enctype="multipart/form-data" id="uploadForm"
+                  style="visibility: hidden;height:1px;">
+                <input type="text" name="clientId" value="{{ clientId }}" />
+                <input type="file" accept="application/json,*.json" name="users" id="fileUploadInput"
+                       onchange="uploadFile(this)" />
+                <input type="text" value="{{ redirectUri }}" name="redirectUri" />
+                <input type="submit" />
+            </form>
+            </p>
+            <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-4">
+{#            <h2 class="govuk-heading-s">Developer zone &#x1f913;</h2>#}
+            {% if users.length %}
+            <p class="govuk-body-s">
+                <a class="govuk-link govuk-link--no-visited-state" href="#" onclick="saveToLocalStorage()">Save</a> the
+                current set of users to localStorage.
+            </p>
+            {% endif %}
+            <p class="govuk-body-s" id="restoreUsersContainer" style="display:none;">
+
+                <a class="govuk-link govuk-link--no-visited-state" href="#"
+                   onclick="restoreFromLocalStorage()">Restore</a> users from localstorage
+
+            <form method="post" action="/restore" id="restoreForm" style="visibility: hidden; height:1px">
+                <input type="text" name="clientId" value="{{ clientId }}" />
+                <input type="text" name="redirectUri" value="{{ redirectUri }}" />
+                <input type="text" name="usersJson" id="usersJson" />
+                <input type="submit" />
+            </form>
             </p>
         </div>
     </div>
@@ -93,41 +116,109 @@
 {% block header_scripts %}
     <script>
 
-        function showFileUploadPrompt() {
-            const fileInput = document.getElementById("fileUploadInput");
-            fileInput.click();
-            event.preventDefault();
-            return false;
+      const serverSideUserCount = {{ users.length }};
+      const localStorageKey = "{{ clientId }}";
+
+      function getRemoteUsers(clientId) {
+        const url = "/download?client_id={{ clientId }}";
+        console.log(url);
+
+        return fetch(url, {
+          method: "GET"
+        }).then((response) => {
+          if (response.status !== 200) throw response.statusText;
+          return response.json();
+        });
+      }
+
+      function getLocalUsers() {
+        const json = localStorage.getItem(localStorageKey);
+        if (!json) return [];
+
+        try {
+          const users = JSON.parse(json);
+          return users;
+        } catch (e) {
+          console.error(e);
+          return [];
+        }
+      }
+
+      function saveToLocalStorage() {
+        getRemoteUsers("{{ clientId }}").then((users) => {
+          localStorage.setItem(localStorageKey, JSON.stringify(users));
+        });
+
+        event.preventDefault();
+        return false;
+      }
+
+      function restoreFromLocalStorage() {
+        console.log("restore from local");
+        const users = getLocalUsers();
+
+        const userJsonText = document.getElementById("usersJson");
+        userJsonText.value = JSON.stringify(users);
+
+        const restoreForm = document.getElementById("restoreForm");
+        restoreForm.submit();
+
+        event.preventDefault();
+        return false;
+      }
+
+
+      function showFileUploadPrompt() {
+        const fileInput = document.getElementById("fileUploadInput");
+        fileInput.click();
+        event.preventDefault();
+        return false;
+      }
+
+      function uploadFile(fileInput) {
+        if (!fileInput.files) {
+          console.log("nothing to upload");
+          return;
+        }
+        console.log("submit upload");
+        const uploadForm = document.getElementById("uploadForm");
+        uploadForm.submit();
+      }
+
+      function remove(emailUserId, email) {
+        if (!confirm(`Really delete ${email}`))
+          return;
+        setFormEmailUserId(emailUserId);
+        const button = document.getElementById("removeButton");
+        button.click();
+      }
+
+      function setFormEmailUserId(emailUserId) {
+        const form = document.getElementById("loginForm");
+        const emailInput = document.getElementById("emailUserId");
+        emailInput.value = emailUserId;
+        return form;
+      }
+
+      function login(emailUserId) {
+        const form = setFormEmailUserId(emailUserId);
+        form.submit();
+      }
+
+      function onContentLoaded() {
+        console.log(serverSideUserCount);
+
+        const users = getLocalUsers();
+        if (users.length) {
+          const restoreContainer = document.getElementById("restoreUsersContainer");
+          restoreContainer.style.display = "inline";
         }
 
-        function uploadFile(fileInput) {
-            if (!fileInput.files) {
-                console.log("nothing to upload")
-                return;
-            }
-            console.log("submit upload")
-            const uploadForm = document.getElementById("uploadForm");
-            uploadForm.submit();
-        }
 
-        function remove(emailUserId, email) {
-            if (!confirm(`Really delete ${email}`)) 
-                return;
-            setFormEmailUserId(emailUserId);
-            const button = document.getElementById("removeButton");
-            button.click();
-        }
+      }
 
-        function setFormEmailUserId(emailUserId) {
-            const form = document.getElementById("loginForm");
-            const emailInput = document.getElementById("emailUserId");
-            emailInput.value = emailUserId;
-            return form;
-        }
+      document.addEventListener("DOMContentLoaded", onContentLoaded);
 
-        function login(emailUserId) {
-            const form = setFormEmailUserId(emailUserId);
-            form.submit();
-        }
+
     </script>
 {% endblock %}
