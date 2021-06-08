@@ -73,6 +73,9 @@ export class AuthorizeUserRoutes {
 
     try {
       const users = JSON.parse(usersJson);
+      if (!Array.isArray(users)) throw "The upload file should contain an array of user objects";
+      const userCode = getUserCode(req, res, clientId);
+      const uploadedUsers = this.userService.uploadUsers(userCode, users);
       this.renderAuthPage(res, users, redirectUri, clientId);
     } catch (ex) {
       this.logger.error(ex);
