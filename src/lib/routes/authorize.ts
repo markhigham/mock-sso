@@ -1,4 +1,5 @@
 import * as url from "url";
+import * as uuid from "uuid";
 import { ILogger, LogManager } from "../logger";
 import { IAuthenticatedUserStore, ISSOUser } from "../data/interfaces";
 import { getUserCode } from "./utils";
@@ -24,6 +25,11 @@ export class AuthorizeUserRoutes {
     this.logger = LogManager.getLogger(__filename);
   }
 
+  /**
+   * create a new user
+   * @param req
+   * @param res
+   */
   create(req, res) {
     this.logger.info(`${req.method} ${req.originalUrl}`);
 
@@ -33,7 +39,12 @@ export class AuthorizeUserRoutes {
     const lastName = req.body.last_name;
     const email = req.body.email;
 
-    const user = new SSOUser(email, firstName, lastName);
+    const weakId = "_" + new Date().getTime();
+    const emailUserId = req.body.email_user_id || `${email}${weakId}`;
+
+    const userId = req.body.user_id || uuid.v4();
+
+    const user = new SSOUser(email, firstName, lastName, emailUserId, userId);
     this.logger.debug(user);
 
     const userCode = getUserCode(req, res, clientId);

@@ -26,7 +26,7 @@
                                 </dt>
 
                                 <dd class="govuk-summary-list__value">{{ user.email }}
-                                  <span class="extra-user-details"><br/>{{ user.user_id }}<br/>{{ user.email_user_id }}</span>
+                                    <span class="extra-user-details"><br />{{ user.user_id }}<br />{{ user.email_user_id }}</span>
                                 </dd>
 
                                 <dd class="govuk-summary-list__actions">
@@ -61,31 +61,33 @@
                     <input type="email" class="govuk-input govuk-input--width-20" id="email" name="email" required />
                 </div>
                 <div class="extra-login-details">
-                <details class="govuk-details" data-modules="govuk-details">
-                  <summary class="govuk-details__summary">
+                    <details class="govuk-details" data-modules="govuk-details">
+                        <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
                       Advanced options
                     </span>
-                  </summary>
-              
-                  <div class="govuk-details__text">
-                    <div class="govuk-form-group">
-                      <div id="event-name-hint" class="govuk-hint">
-                        Leave these blank unless you know what they do.
-                      </div>
-                      <label class="govuk-label" for="email">email_user_id</label>
-                      <input type="text" class="govuk-input govuk-input--width-20" id="email_user_id" name="email_user_id" />
-                    </div>
-                    <div class="govuk-form-group">
-                      <label class="govuk-label" for="email">user_id</label>
-                      <input type="text" class="govuk-input govuk-input--width-20" id="user_id" name="user_id" />
+                        </summary>
 
-                    </div>
-                  </div>
-                </details>
+                        <div class="govuk-details__text">
+                            <div class="govuk-form-group">
+                                <div id="event-name-hint" class="govuk-hint">
+                                    Leave these blank unless you know what they do.
+                                </div>
+                                <label class="govuk-label" for="email">email_user_id</label>
+                                <input type="text" class="govuk-input govuk-input--width-20" id="email_user_id"
+                                       name="email_user_id" />
+                            </div>
+                            <div class="govuk-form-group">
+                                <label class="govuk-label" for="email">user_id</label>
+                                <input type="text" class="govuk-input govuk-input--width-20" id="user_id"
+                                       name="user_id" />
+
+                            </div>
+                        </div>
+                    </details>
 
                 </div>
-                  
+
                 <div class="govuk-form-group">
                     <input type="hidden" value="{{ clientId }}" name="clientId" />
                     <input type="hidden" value="{{ redirectUri }}" name="redirectUri" />
@@ -118,26 +120,23 @@
             </p>
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-4">
             {% if users.length %}
-            <p class="govuk-body-s">
-                <a class="govuk-link govuk-link--no-visited-state" href="#" onclick="saveToLocalStorage()">Save</a> the
-                current set of users to localStorage.
-            </p>
+                <p class="govuk-body-s">
+                    <a class="govuk-link govuk-link--no-visited-state" href="#" onclick="saveToLocalStorage()">Save</a>
+                    the
+                    current set of users to localStorage.
+                </p>
             {% endif %}
             <p class="govuk-body-s" id="restoreUsersContainer" style="display:none;">
 
                 <a class="govuk-link govuk-link--no-visited-state" href="#"
                    onclick="restoreFromLocalStorage()">Restore</a> users from localstorage
 
-            <form method="post" action="/restore" id="restoreForm" style="visibility: hidden; height:1px">
-                <input type="text" name="clientId" value="{{ clientId }}" />
-                <input type="text" name="redirectUri" value="{{ redirectUri }}" />
-                <input type="text" name="usersJson" id="usersJson" />
-                <input type="submit" />
-            </form>
-            </p>
-            <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-4">
-            <p class="govuk-body-s">
-              <button style="font-size:80%;" class="govuk-button govuk-button--secondary" onclick="toggleAdvancedOptions(this)">Show advanced options</button>
+                <form method="post" action="/restore" id="restoreForm" style="visibility: hidden; height:1px">
+                    <input type="text" name="clientId" value="{{ clientId }}" />
+                    <input type="text" name="redirectUri" value="{{ redirectUri }}" />
+                    <input type="text" name="usersJson" id="usersJson" />
+                    <input type="submit" />
+                </form>
             </p>
 
         </div>
@@ -147,7 +146,6 @@
 
 {% block header_scripts %}
     <script>
-
       const serverSideUserCount = {{ users.length }};
       const localStorageKey = "{{ clientId }}";
 
@@ -199,7 +197,6 @@
         return false;
       }
 
-
       function showFileUploadPrompt() {
         const fileInput = document.getElementById("fileUploadInput");
         fileInput.click();
@@ -237,21 +234,6 @@
         form.submit();
       }
 
-      function toggleAdvancedOptions(sender){
-        console.log(this);
-        console.log(sender);
-
-        const toggleResult = document.body.classList.toggle("advanced-options-visible");
-        if(toggleResult) {
-          // the class was added
-          sender.innerText = "Hide advanced options";
-        
-        } else {
-          sender.innerText = "Show advanced options";
-        }
-
-      }
-
       function onContentLoaded() {
         console.log(serverSideUserCount);
 
@@ -260,12 +242,9 @@
           const restoreContainer = document.getElementById("restoreUsersContainer");
           restoreContainer.style.display = "inline";
         }
-
-
       }
 
       document.addEventListener("DOMContentLoaded", onContentLoaded);
-
 
     </script>
 {% endblock %}

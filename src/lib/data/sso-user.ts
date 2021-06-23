@@ -1,4 +1,3 @@
-import * as uuid from "uuid";
 import { ISSOUser } from "./interfaces";
 
 export class SSOUser implements ISSOUser {
@@ -12,18 +11,15 @@ export class SSOUser implements ISSOUser {
 
   readonly related_emails: string[];
 
-  constructor(email: string, firstName: string, lastName: string, emailUserId?: string) {
-    const weakId = "_" + new Date().getTime();
-
+  constructor(email: string, firstName: string, lastName: string, emailUserId: string, userId: string) {
     this.email = email;
     this.contact_email = email;
-    if (emailUserId) this.email_user_id = emailUserId;
-    else this.email_user_id = `${email}${weakId}`;
+    this.email_user_id = emailUserId;
 
     this.first_name = firstName;
     this.last_name = lastName;
     this.related_emails = [];
 
-    this.user_id = uuid.v4();
+    this.user_id = userId;
   }
 }
